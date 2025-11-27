@@ -1,4 +1,4 @@
-import EnterIcon from '../assets/Untitled design-2.svg';
+import EnterIcon from '../assets/enter-green.png';
 
 const FilledEnterButton = ({ send }) => {
   return (

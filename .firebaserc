@@ -1,7 +1,0 @@
-{
-  "projects": {
-    "default": "mall-mystery-heroes",
-    "dev": "mall-mystery-heroes",
-    "prod": "mall-mystery-heroes"
-  }
-}
