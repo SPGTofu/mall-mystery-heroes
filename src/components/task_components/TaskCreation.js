@@ -172,7 +172,7 @@ const TaskCreation = React.forwardRef((props, titleInputRef) => {
                     <option value="Task">Task</option>
                     <option value="Revival Mission">Revival Mission</option>
                 </Select>
-                
+
                 <Tooltip label="Points">
                     <NumberInput
                         style={styles.pointInput}

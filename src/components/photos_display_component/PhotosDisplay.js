@@ -296,7 +296,9 @@ const PhotosDisplay = ({ players = [] }) => {
                             alt="Deny"
                             sx={styles.buttonImage}
                             onClick={handleDeny}
-                            opacity={currentPhoto?.mission != null || currentPhoto?.target ? 1 : 0.3}
+                            opacity={
+                                currentPhoto?.mission != null || currentPhoto?.target ? 1 : 0.3
+                            }
                             cursor={
                                 currentPhoto?.mission != null || currentPhoto?.target
                                     ? 'pointer'
@@ -309,7 +311,9 @@ const PhotosDisplay = ({ players = [] }) => {
                             src={confirm}
                             alt="Approve"
                             sx={styles.buttonImage}
-                            opacity={currentPhoto?.mission != null || currentPhoto?.target ? 1 : 0.3}
+                            opacity={
+                                currentPhoto?.mission != null || currentPhoto?.target ? 1 : 0.3
+                            }
                             cursor={
                                 currentPhoto?.mission != null || currentPhoto?.target
                                     ? 'pointer'
