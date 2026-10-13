@@ -9,6 +9,7 @@ import {
     NumberIncrementStepper,
     NumberInputStepper,
     Select,
+    Tooltip,
 } from '@chakra-ui/react';
 import CreateAlert from '../CreateAlert';
 import {
@@ -171,36 +172,40 @@ const TaskCreation = React.forwardRef((props, titleInputRef) => {
                     <option value="Task">Task</option>
                     <option value="Revival Mission">Revival Mission</option>
                 </Select>
+                
+                <Tooltip label="Points">
+                    <NumberInput
+                        style={styles.pointInput}
+                        value={PointValue}
+                        onChange={handlePointChange}
+                        isDisabled={disableNumberInput}
+                        m="2px"
+                        marginX="4px"
+                    >
+                        <NumberInputField />
+                        <NumberInputStepper>
+                            <NumberIncrementStepper color="white" />
+                            <NumberDecrementStepper color="white" />
+                        </NumberInputStepper>
+                    </NumberInput>
+                </Tooltip>
 
-                <NumberInput
-                    style={styles.pointInput}
-                    value={PointValue}
-                    onChange={handlePointChange}
-                    isDisabled={disableNumberInput}
-                    m="2px"
-                    marginX="4px"
-                >
-                    <NumberInputField />
-                    <NumberInputStepper>
-                        <NumberIncrementStepper color="white" />
-                        <NumberDecrementStepper color="white" />
-                    </NumberInputStepper>
-                </NumberInput>
-
-                <NumberInput
-                    style={styles.pointInput}
-                    value={MaxCompletions}
-                    onChange={handleMaxCompletionsChange}
-                    min={0}
-                    m="2px"
-                    marginX="4px"
-                >
-                    <NumberInputField placeholder="Max completions" />
-                    <NumberInputStepper>
-                        <NumberIncrementStepper color="white" />
-                        <NumberDecrementStepper color="white" />
-                    </NumberInputStepper>
-                </NumberInput>
+                <Tooltip label="Max Players (Optional)">
+                    <NumberInput
+                        style={styles.pointInput}
+                        value={MaxCompletions}
+                        onChange={handleMaxCompletionsChange}
+                        min={0}
+                        m="2px"
+                        marginX="4px"
+                    >
+                        <NumberInputField placeholder="Max completions" />
+                        <NumberInputStepper>
+                            <NumberIncrementStepper color="white" />
+                            <NumberDecrementStepper color="white" />
+                        </NumberInputStepper>
+                    </NumberInput>
+                </Tooltip>
 
                 <Button sx={styles.addButton} onClick={handleAddTask} colorScheme="blue">
                     Add

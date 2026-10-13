@@ -1,4 +1,4 @@
-import { Box, Heading, Image, Text } from '@chakra-ui/react';
+import { Box, Heading, Image, Text, Tooltip } from '@chakra-ui/react';
 import { useContext, useEffect, useState } from 'react';
 import { gameContext } from '../Contexts';
 import {
@@ -13,15 +13,12 @@ import { onSnapshot } from 'firebase/firestore';
 import { splitPhotosByStatus } from '../../game/photoJudgments';
 import { resolvePlayerDisplayName } from '../../game/playerNames';
 import { executeKill } from '../executeKill';
-import { undoKill } from '../undoKill';
 import confirm from '../../assets/enter-green.png';
 import deny from '../../assets/red-x.png';
-import undo from '../../assets/arrow-left.png';
 import GamePhotos from './GamePhotos';
 import { executionContext } from '../Contexts';
 import CreateAlert from '../CreateAlert';
 import { completeMission } from '../completeMission';
-import { undoMissionPhotoApproval } from '../undoMissionPhotoApproval';
 
 // A player now names their own target or mission when submitting a photo
 // (docs/superpowers/specs/2026-09-02-player-selects-target-mission-design.md)
@@ -265,93 +262,6 @@ const PhotosDisplay = ({ players = [] }) => {
         }
     };
 
-    // For an approved kill, the full reversal (every player killPlayer.js's
-    // transaction touched, not just the target) now happens atomically
-    // inside undoKillPlayer, which also resets the photo's status back to
-    // pending as part of the same transaction — so this function no longer
-    // needs to know anything about individual player fields, and no longer
-    // calls updatePhotoStatusForRoom for that path
-    // (docs/superpowers/specs/2026-08-16-full-kill-undo-design.md). A
-    // denied judgment never touched player data, so undoing one is still
-    // just a status reset here.
-    const handleUndo = async () => {
-        if (judgedPhotos.length === 0) return;
-
-        const last = judgedPhotos[judgedPhotos.length - 1];
-        const { photo, action } = last;
-
-        if (action === 'missionPass') {
-            try {
-                await undoMissionPhotoApproval(roomID, photo.id);
-                await addLog('Undo: the last mission completion was reverted', 'blue.200');
-                await addPlayerMessageForRoom(
-                    {
-                        type: 'broadcast',
-                        recipient: null,
-                        text: 'Undo: the last mission completion was reverted',
-                        standings: null,
-                    },
-                    roomID
-                );
-            } catch (error) {
-                console.error('Error undoing mission completion:', error);
-                createAlert('error', 'Error undoing photo judgment', error.message, 1500);
-            }
-            return;
-        }
-
-        try {
-            if (action === 'pass') {
-                await undoKill(roomID, photo.id);
-                await addLog(
-                    `Undo: ${photo.target}'s death by ${photo.assassin} was reverted`,
-                    'blue.200'
-                );
-                await addPlayerMessageForRoom(
-                    {
-                        type: 'killResult',
-                        recipient: null,
-                        text: `Undo: ${photo.target}'s death by ${photo.assassin} was reverted`,
-                        standings: null,
-                        mission: null,
-                        sender: null,
-                        assassin: photo.assassin,
-                        target: photo.target,
-                        outcome: 'undoneApproval',
-                    },
-                    roomID
-                );
-            }
-
-            if (action === 'deny') {
-                await updatePhotoStatusForRoom(roomID, photo.id, 'pending');
-                await addLog(
-                    `Undo: denial of ${photo.assassin}'s kill attempt was reverted.`,
-                    'blue.200'
-                );
-                await addPlayerMessageForRoom(
-                    {
-                        type: 'killResult',
-                        recipient: null,
-                        text: `Undo: denial of ${photo.assassin}'s kill attempt was reverted.`,
-                        standings: null,
-                        mission: null,
-                        sender: null,
-                        assassin: photo.assassin,
-                        target: null,
-                        outcome: 'undoneDenial',
-                    },
-                    roomID
-                );
-            }
-            // unjudgedPhotos/judgedPhotos update via the onSnapshot listener
-            // once the writes above land — no local update needed.
-        } catch (error) {
-            console.error('Error undoing photo judgment:', error);
-            createAlert('error', 'Error undoing photo judgment', error.message, 1500);
-        }
-    };
-
     return (
         <>
             <Box sx={styles.photosContainer}>
@@ -380,20 +290,34 @@ const PhotosDisplay = ({ players = [] }) => {
                     </Box>
                 )}
                 <Box sx={styles.buttonsBox}>
-                    <Image src={deny} alt="Deny" sx={styles.buttonImage} onClick={handleDeny} />
-                    <Image src={undo} alt="Undo" sx={styles.buttonImage} onClick={handleUndo} />
-                    <Image
-                        src={confirm}
-                        alt="Approve"
-                        sx={styles.buttonImage}
-                        opacity={currentPhoto?.mission != null || currentPhoto?.target ? 1 : 0.3}
-                        cursor={
-                            currentPhoto?.mission != null || currentPhoto?.target
-                                ? 'pointer'
-                                : 'not-allowed'
-                        }
-                        onClick={handlePass}
-                    />
+                    <Tooltip label="Deny">
+                        <Image
+                            src={deny}
+                            alt="Deny"
+                            sx={styles.buttonImage}
+                            onClick={handleDeny}
+                            opacity={currentPhoto?.mission != null || currentPhoto?.target ? 1 : 0.3}
+                            cursor={
+                                currentPhoto?.mission != null || currentPhoto?.target
+                                    ? 'pointer'
+                                    : 'not-allowed'
+                            }
+                        />
+                    </Tooltip>
+                    <Tooltip label="Approve">
+                        <Image
+                            src={confirm}
+                            alt="Approve"
+                            sx={styles.buttonImage}
+                            opacity={currentPhoto?.mission != null || currentPhoto?.target ? 1 : 0.3}
+                            cursor={
+                                currentPhoto?.mission != null || currentPhoto?.target
+                                    ? 'pointer'
+                                    : 'not-allowed'
+                            }
+                            onClick={handlePass}
+                        />
+                    </Tooltip>
                 </Box>
             </Box>
         </>
@@ -440,7 +364,8 @@ const styles = {
         w: '100%',
         justifyContent: 'center',
         alignItems: 'center',
-        mt: '10px',
+        mt: '5px',
+        mb: '5px',
     },
     buttonImage: {
         w: '10%',

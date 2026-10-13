@@ -288,11 +288,11 @@ const PlayerGame = () => {
                     )}
                     {gameStarted && playerData && !playerData.isAlive && (
                         <>
-                            <Heading size="md" mb={2}>
-                                You&apos;ve been eliminated
+                            <Heading size="md" mb={2} color="red.500">
+                                YOU&apos;VE BEEN ELIMINATED
                             </Heading>
                             <Text mb={4}>
-                                You may be revived if the host assigns you a revival mission.
+                                Be on the lookout for revival missions to get back in.
                             </Text>
                         </>
                     )}
