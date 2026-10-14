@@ -45,6 +45,9 @@ import { formatMessageTime } from '../utils/formatMessageTime';
 import { normalizePlayerName, resolvePlayerDisplayName } from '../game/playerNames';
 import useBoundaryLocation from '../hooks/useBoundaryLocation';
 import PlayerMapModal from '../components/map_components/PlayerMapModal';
+import LeaderboardIcon from '../assets/leaderboard-white.png'; 
+import MissionIcon from '../assets/mission-white.png';
+
 // require(), not a named `import` — gameBoundary.js is CommonJS
 // (module.exports) by design (see its own header comment), and a named ES
 // `import` of it is not statically analyzable the way CRA's production
@@ -479,7 +482,7 @@ const PlayerGame = () => {
             // console (GameMasterView.js) is untouched.
             bg={!isGameActive ? 'red.900' : undefined}
         >
-            <Flex justifyContent="space-between" alignItems="center" wrap="wrap" gap={2} mb={2}>
+            <Flex direction="column" alignItems="flex-start" gap={2} mb={2}>
                 <Heading size="md">
                     {playerName || 'You'} joined {roomID}
                 </Heading>
@@ -492,17 +495,20 @@ const PlayerGame = () => {
                     >
                         Leave
                     </Button>
-                    <Button size="sm" colorScheme="teal" variant="outline" onClick={onMissionsOpen}>
-                        Missions
-                    </Button>
-                    <Button
-                        size="sm"
-                        colorScheme="teal"
-                        variant="outline"
+                    <img
+                        src={MissionIcon}
+                        alt=""
+                        width={40}
+                        height={40}
+                        onClick={onMissionsOpen}
+                    />
+                    <img
+                        src={LeaderboardIcon}
+                        alt=""
+                        width={40}
+                        height={40}
                         onClick={onLeaderboardOpen}
-                    >
-                        Leaderboard
-                    </Button>
+                    />
                 </HStack>
             </Flex>
             <AlertDialog isOpen={isOpen} leastDestructiveRef={cancelRef} onClose={onClose}>
