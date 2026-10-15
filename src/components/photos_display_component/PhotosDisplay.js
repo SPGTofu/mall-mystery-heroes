@@ -62,7 +62,11 @@ const PhotosDisplay = ({ players = [] }) => {
         const unsubscribe = onSnapshot(
             photosQuery,
             (snapshot) => {
-                const allPhotos = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+                const allPhotos = snapshot.docs
+                    .map((doc) => ({ id: doc.id, ...doc.data() }))
+                    // Fun photos are shared in player chat, but do not need
+                    // moderator review and should never enter this queue.
+                    .filter((photo) => !photo.isFunPhoto);
                 const { unjudged, judged } = splitPhotosByStatus(allPhotos);
                 setUnjudgedPhotos(unjudged);
                 setJudgedPhotos(judged);
@@ -123,11 +127,26 @@ const PhotosDisplay = ({ players = [] }) => {
     const handlePass = async () => {
         if (visibleUnjudgedPhotos.length === 0) return;
         const [approvingPhoto] = visibleUnjudgedPhotos;
-        if (approvingPhoto.mission == null && !approvingPhoto.target) return;
         setOptimisticallyJudgedIds((previous) => [...previous, approvingPhoto.id]);
 
         try {
-            if (approvingPhoto.mission != null) {
+            if (
+                approvingPhoto.isFunPhoto ||
+                (approvingPhoto.mission == null && !approvingPhoto.target)
+            ) {
+                await updatePhotoStatusForRoom(roomID, approvingPhoto.id, 'approved');
+                const displayName = resolvePlayerDisplayName(approvingPhoto.assassin, players);
+                await addLog(`${displayName} shared a fun photo`, 'green.400');
+                await addPlayerMessageForRoom(
+                    {
+                        type: 'broadcast',
+                        recipient: null,
+                        text: `${displayName} shared a fun photo!`,
+                        standings: null,
+                    },
+                    roomID
+                );
+            } else if (approvingPhoto.mission != null) {
                 const missionIndex = approvingPhoto.mission;
                 const result = await completeMission(missionIndex, approvingPhoto.assassin, roomID);
                 await approvePhotoAsMissionForRoom(
@@ -300,7 +319,7 @@ const PhotosDisplay = ({ players = [] }) => {
                                 {currentPhoto.assassin}'s kill attempt on {currentPhoto.target}
                             </Text>
                         ) : (
-                            <Text color="gray.400">No target selected.</Text>
+                            <Text color="gray.400">{currentPhoto.assassin}&apos;s fun photo</Text>
                         )}
                         {/* Set by submitKillPhoto.js. A photo taken while the
                             target's Horcrux was active doesn't count
@@ -319,14 +338,8 @@ const PhotosDisplay = ({ players = [] }) => {
                             alt="Deny"
                             sx={styles.buttonImage}
                             onClick={handleDeny}
-                            opacity={
-                                currentPhoto?.mission != null || currentPhoto?.target ? 1 : 0.3
-                            }
-                            cursor={
-                                currentPhoto?.mission != null || currentPhoto?.target
-                                    ? 'pointer'
-                                    : 'not-allowed'
-                            }
+                            opacity={currentPhoto ? 1 : 0.3}
+                            cursor={currentPhoto ? 'pointer' : 'not-allowed'}
                         />
                     </Tooltip>
                     <Tooltip label="Approve">
@@ -334,14 +347,8 @@ const PhotosDisplay = ({ players = [] }) => {
                             src={confirm}
                             alt="Approve"
                             sx={styles.buttonImage}
-                            opacity={
-                                currentPhoto?.mission != null || currentPhoto?.target ? 1 : 0.3
-                            }
-                            cursor={
-                                currentPhoto?.mission != null || currentPhoto?.target
-                                    ? 'pointer'
-                                    : 'not-allowed'
-                            }
+                            opacity={currentPhoto ? 1 : 0.3}
+                            cursor={currentPhoto ? 'pointer' : 'not-allowed'}
                             onClick={handlePass}
                         />
                     </Tooltip>

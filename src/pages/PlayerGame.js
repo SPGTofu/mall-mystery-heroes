@@ -368,9 +368,9 @@ const PlayerGame = () => {
         return () => unsubscribe();
     }, [roomID, gameBoundary?.enabled, playerName]);
 
-    // The map exists only under this condition (see the location panel
-    // below), so ping cards offer "View on map" only then too.
-    const isMapAvailable = isGameActive && gameBoundary?.enabled && (playerData?.isAlive ?? true);
+    // Eliminated players can still view the map and message pings. The map
+    // itself is only available during an active game with a configured zone.
+    const isMapAvailable = isGameActive && gameBoundary?.enabled;
 
     // Mounted always, regardless of whether the map modal is open —
     // closing PlayerMapModal must not stop location reporting.
@@ -544,8 +544,8 @@ const PlayerGame = () => {
                     <img
                         src={ExitIcon}
                         alt=""
-                        width={36}
-                        height={36}
+                        width={40}
+                        height={40}
                         onClick={handleLeaveClick}
                     />
                 </HStack>
@@ -567,26 +567,30 @@ const PlayerGame = () => {
                     <img
                         src={MissionIcon}
                         alt=""
-                        width={36}
-                        height={36}
+                        width={44}
+                        height={44}
                         onClick={onMissionsOpen}
                     />
                     <Divider m={0} mr={2} orientation="vertical" color="white" h="70%"/>
                     <img
                         src={LeaderboardIcon}
                         alt=""
-                        width={36}
-                        height={36}
+                        width={40}
+                        height={40}
                         onClick={onLeaderboardOpen}
                     />
-                    <Divider m={0} mx={2} orientation="vertical" color="white" h="70%"/>
-                    <img
-                        src={LocationIcon}
-                        alt=""
-                        width={18}
-                        height={18}
-                        onClick={onMapOpen}
-                    />
+                    {gameBoundary?.enabled && (
+                        <>             
+                            <Divider m={0} mx={2} orientation="vertical" color="white" h="70%"/>
+                            <img
+                                src={LocationIcon}
+                                alt=""
+                                width={18}
+                                height={18}
+                                onClick={onMapOpen}
+                            />
+                        </>
+                    )}
                 </HStack>
             </Flex>
             <AlertDialog isOpen={isOpen} leastDestructiveRef={cancelRef} onClose={onClose}>
@@ -664,7 +668,7 @@ const PlayerGame = () => {
                             </Text>
                         </>
                     )}
-                    {gameBoundary?.enabled && (playerData?.isAlive ?? true) && (
+                    {gameBoundary?.enabled && (
                         <>
                             {permissionState === 'unknown' && (
                                 <Box bg="blue.900" color="white" borderRadius="md" p={3} mb={2}>

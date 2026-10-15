@@ -160,9 +160,10 @@ const MessageComposer = ({
         const mission = claimValue.startsWith('mission:')
             ? Number(claimValue.slice('mission:'.length))
             : null;
+        const isFunPhoto = claimValue === 'fun';
         try {
             const url = await uploadKillPhoto(roomID, blobToSubmit);
-            await submitKillPhoto({ roomId: roomID, url, target, mission });
+            await submitKillPhoto({ roomId: roomID, url, target, mission, isFunPhoto });
         } catch (submitError) {
             console.error('Error submitting kill photo:', submitError);
             createAlert(
