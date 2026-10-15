@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Box, Flex, Image, Input, Button, VisuallyHidden } from '@chakra-ui/react';
+import { Box, Flex, Image, Textarea, Button, VisuallyHidden } from '@chakra-ui/react';
 import { submitChatMessage } from '../submitChatMessage';
 import { submitKillPhoto } from '../submitKillPhoto';
 import { compressImage } from '../../utils/compressImage';
@@ -105,9 +105,8 @@ const MessageComposer = ({
     };
 
     const handleKeyDown = (event) => {
-        // Guards Shift+Enter (would insert a newline, if this ever becomes
-        // multiline) and IME composition (an Enter keystroke that's
-        // confirming a composed character, not submitting the message).
+        // Shift+Enter inserts a newline in the multiline composer. Ignore
+        // IME composition because Enter may be confirming a composed character.
         if (event.key === 'Enter' && !event.shiftKey && !event.nativeEvent.isComposing) {
             handleSend();
         }
@@ -191,7 +190,7 @@ const MessageComposer = ({
 
     return (
         <Flex p={2} borderTop="1px solid" borderColor="gray.600">
-            <Input
+            <Textarea
                 placeholder="Type a message..."
                 value={text}
                 onChange={(event) => setText(event.target.value)}
@@ -199,6 +198,10 @@ const MessageComposer = ({
                 isDisabled={disabled}
                 mr={2}
                 maxLength={500}
+                minH="40px"
+                maxH="160px"
+                resize="none"
+                overflowY="auto"
             />
             <VisuallyHidden>
                 <input

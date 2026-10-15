@@ -38,7 +38,7 @@
         "lint:fix": "eslint src --ext .js,.jsx --fix",
         "format": "prettier --write \"src/**/*.{js,jsx,css}\" \"*.{json,md}\" \"docs/**/*.md\"",
         "format:check": "prettier --check \"src/**/*.{js,jsx,css}\" \"*.{json,md}\" \"docs/**/*.md\"",
-        "firebase:emulate": "firebase emulators:start --project default"
+        "firebase:emulate": "node functions/scripts/sync-shared-game-logic.js && firebase emulators:start --project default"
     },
     "browserslist": {
         "production": [

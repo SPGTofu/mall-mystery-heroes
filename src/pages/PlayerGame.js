@@ -8,6 +8,7 @@ import {
     AlertDialogOverlay,
     Box,
     Button,
+    Divider,
     Flex,
     Heading,
     HStack,
@@ -46,8 +47,11 @@ import { formatMessageTime } from '../utils/formatMessageTime';
 import { normalizePlayerName, resolvePlayerDisplayName } from '../game/playerNames';
 import useBoundaryLocation from '../hooks/useBoundaryLocation';
 import PlayerMapModal from '../components/map_components/PlayerMapModal';
-import LeaderboardIcon from '../assets/leaderboard-white.png'; 
+import LeaderboardIcon from '../assets/leaderboard-white.png';
+import ExitIcon from '../assets/exit.png'; 
 import MissionIcon from '../assets/mission-white.png';
+import ShopIcon from '../assets/shop-white.png';
+import LocationIcon from '../assets/location-white.png';
 
 // require(), not a named `import` — gameBoundary.js is CommonJS
 // (module.exports) by design (see its own header comment), and a named ES
@@ -532,41 +536,56 @@ const PlayerGame = () => {
             // console (GameMasterView.js) is untouched.
             bg={!isGameActive ? 'red.900' : undefined}
         >
-            <Flex justifyContent="space-between" alignItems="center" wrap="wrap" gap={2} mb={2}>
-                <HStack spacing={2}>
-                    {/* Top-left per POWER_UPS_SPEC.md — only while there's a
-                        game to spend points in, and only for the living. */}
-                    {canShop && (
-                        <Button size="sm" colorScheme="yellow" onClick={onShopOpen}>
-                            Shop
-                        </Button>
-                    )}
+            <Flex direction="column" gap={0} mb={2}>
+                <HStack spacing={2} justifyContent="space-between" flex="1" minW="0">
                     <Heading size="md">
                         {playerName || 'You'} joined {roomID}
                     </Heading>
-                </HStack>
-                <HStack spacing={2}>
-                    <Button
-                        size="sm"
-                        colorScheme="red"
-                        variant="outline"
+                    <img
+                        src={ExitIcon}
+                        alt=""
+                        width={36}
+                        height={36}
                         onClick={handleLeaveClick}
-                    >
-                        Leave
-                    </Button>
+                    />
+                </HStack>
+                <HStack spacing={2} justifyContent="flex-start" width="100%">
+                    {/* Top-left per POWER_UPS_SPEC.md — only while there's a
+                        game to spend points in, and only for the living. */}
+                    {canShop && (
+                        <>
+                            <img
+                                src={ShopIcon}
+                                alt=""
+                                width={36}
+                                height={36}
+                                onClick={onShopOpen}
+                            />
+                            <Divider m={0} ml={2} orientation="vertical" color="white" h="70%"/>
+                        </>
+                    )}
                     <img
                         src={MissionIcon}
                         alt=""
-                        width={40}
-                        height={40}
+                        width={36}
+                        height={36}
                         onClick={onMissionsOpen}
                     />
+                    <Divider m={0} mr={2} orientation="vertical" color="white" h="70%"/>
                     <img
                         src={LeaderboardIcon}
                         alt=""
-                        width={40}
-                        height={40}
+                        width={36}
+                        height={36}
                         onClick={onLeaderboardOpen}
+                    />
+                    <Divider m={0} mx={2} orientation="vertical" color="white" h="70%"/>
+                    <img
+                        src={LocationIcon}
+                        alt=""
+                        width={18}
+                        height={18}
+                        onClick={onMapOpen}
                     />
                 </HStack>
             </Flex>
@@ -705,7 +724,7 @@ const PlayerGame = () => {
                             )}
                             {liveBoundaryStatus.status !== 'outside' &&
                                 liveBoundaryStatus.status !== 'unavailable' && (
-                                    <Text mb={2}>{statusText}</Text>
+                                    <Text mb={4}>{statusText}</Text>
                                 )}
                             {/* Suppressed while permissionState is still 'unknown' — the
                                 pre-permission box above already explains why there is
@@ -731,9 +750,6 @@ const PlayerGame = () => {
                                         )}
                                     </Box>
                                 )}
-                            <Button size="sm" mb={2} onClick={onMapOpen}>
-                                View Game Map
-                            </Button>
                             <PlayerMapModal
                                 isOpen={isMapOpen}
                                 onClose={handleMapClose}

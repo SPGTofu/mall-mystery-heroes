@@ -28,6 +28,7 @@ import { completeMission } from '../completeMission';
 // name resolution.
 const PhotosDisplay = ({ players = [] }) => {
     const [unjudgedPhotos, setUnjudgedPhotos] = useState([]);
+    // eslint-disable-next-line no-unused-vars
     const [judgedPhotos, setJudgedPhotos] = useState([]);
     // Photo IDs the GM has clicked Approve/Deny on but Firestore hasn't
     // confirmed yet — executeKill/updatePhotoStatusForRoom can take
