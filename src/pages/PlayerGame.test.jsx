@@ -603,9 +603,7 @@ describe('PlayerGame', () => {
         renderWaiting();
 
         expect(screen.getByText(/you've been eliminated/i)).toBeInTheDocument();
-        expect(
-            screen.getByText(/be on the lookout for revival missions/i)
-        ).toBeInTheDocument();
+        expect(screen.getByText(/be on the lookout for revival missions/i)).toBeInTheDocument();
         expect(screen.queryByText(/your target/i)).not.toBeInTheDocument();
     });
 
