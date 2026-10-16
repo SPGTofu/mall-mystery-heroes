@@ -345,6 +345,7 @@ describe('MessageComposer', () => {
                 url: 'https://example.com/photo.jpg',
                 target: 'bob',
                 mission: null,
+                isFunPhoto: false,
             })
         );
         // The order still genuinely matters: the photo must be uploaded (so
@@ -372,6 +373,7 @@ describe('MessageComposer', () => {
                 url: 'https://example.com/photo.jpg',
                 target: 'bob',
                 mission: null,
+                isFunPhoto: false,
             })
         );
     });
@@ -401,6 +403,7 @@ describe('MessageComposer', () => {
                 url: 'https://example.com/photo.jpg',
                 target: null,
                 mission: 3,
+                isFunPhoto: false,
             })
         );
     });
@@ -415,7 +418,7 @@ describe('MessageComposer', () => {
         await userEvent.click(screen.getByRole('button', { name: 'Send photo' }));
         await userEvent.upload(screen.getByLabelText('Take Photo'), fakeFile);
 
-        expect(await screen.findByLabelText('Select target or mission')).toBeInTheDocument();
+        expect(await screen.findByLabelText('Photo type')).toBeInTheDocument();
         expect(screen.getByRole('option', { name: 'carol' })).toBeInTheDocument();
     });
 
