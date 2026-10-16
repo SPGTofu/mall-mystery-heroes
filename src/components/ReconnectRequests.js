@@ -45,15 +45,19 @@ const ReconnectRequests = () => {
                     ? `${request.playerName} joined the game; target assignments were updated.`
                     : `${request.playerName} reconnected`;
             await addLog(message, 'blue.300');
-            await addPlayerMessageForRoom(
-                {
-                    type: 'broadcast',
-                    recipient: null,
-                    text: message,
-                    standings: null,
-                },
-                roomID
-            );
+            // New joins are announced inside the approval transaction;
+            // reconnects still need their client-side announcement.
+            if (request.requestType !== 'join') {
+                await addPlayerMessageForRoom(
+                    {
+                        type: 'broadcast',
+                        recipient: null,
+                        text: message,
+                        standings: null,
+                    },
+                    roomID
+                );
+            }
         } catch (error) {
             console.error('Error approving request: ', error);
             createAlert('error', 'Error approving request', error.message, 1500);

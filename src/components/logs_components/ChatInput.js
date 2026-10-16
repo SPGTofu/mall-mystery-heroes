@@ -18,7 +18,6 @@ import {
 import commandCompletion from '../../game/commandCompletion';
 import RemapPlayers from '../RemapPlayers';
 import { completeMission } from '../completeMission';
-import { undoMissionCommand } from '../undoMissionCommand';
 import { executeKill } from '../executeKill';
 import { removePlayer } from '../removePlayer';
 import { parseCommand, UNIMPLEMENTED_COMMANDS } from '../../game/commands';
@@ -81,8 +80,6 @@ const handleCommandExecution = async (
         handleOpenSznended,
         handlePlayerRevive,
         handleTaskCompleted,
-        handleShowMissionCreation,
-        handleShowMissionList,
         handleShowLeaderboardView,
         addLog,
     } = xecutionContext; // retrieve contexts
@@ -285,25 +282,6 @@ const handleCommandExecution = async (
                         await updateIsCompleteToTrueForTaskByIndex(missionIndex, roomID);
                         createAlert('info', 'Completed', 'Task has been saved as completed', 1500);
                         handleTaskCompleted(task.title);
-                        break;
-                    case 'start':
-                        handleShowMissionCreation();
-                        break;
-                    case 'view':
-                        handleShowMissionList();
-                        break;
-                    case 'undo':
-                        await undoMissionCommand(roomID);
-                        await addLog('Undo: the last mission completion was reverted', 'blue.200');
-                        await addPlayerMessageForRoom(
-                            {
-                                type: 'broadcast',
-                                recipient: null,
-                                text: 'Undo: the last mission completion was reverted',
-                                standings: null,
-                            },
-                            roomID
-                        );
                         break;
                     default:
                         createAlert('error', 'Error', `Inavlid argument: ${args[0]}`, 1500);
@@ -704,8 +682,8 @@ const styles = {
         justifyContent: 'center',
     },
     enterImage: {
-        width: '6%',
-        height: '70%',
+        width: '40px',
+        height: '40px',
     },
 };
 

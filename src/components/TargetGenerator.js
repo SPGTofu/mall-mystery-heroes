@@ -129,11 +129,11 @@ const TargetGenerator = ({ arrayOfPlayers, roomID, handleLobbyRoom }) => {
     return (
         <>
             <Button
-                color="white"
-                variant="outline"
+                color="black"
                 borderRadius="3xl"
-                _hover={{ bg: 'white', color: 'black' }}
+                _hover={{ opacity: 0.8 }}
                 onClick={handleClick}
+                size="lg"
             >
                 Begin Game
             </Button>

@@ -368,9 +368,9 @@ const PlayerGame = () => {
         return () => unsubscribe();
     }, [roomID, gameBoundary?.enabled, playerName]);
 
-    // Eliminated players can still view the map and message pings. The map
-    // itself is only available during an active game with a configured zone.
-    const isMapAvailable = isGameActive && gameBoundary?.enabled;
+    // The map exists only under this condition (see the location panel
+    // below), so ping cards offer "View on map" only then too.
+    const isMapAvailable = isGameActive && gameBoundary?.enabled && (playerData?.isAlive ?? true);
 
     // Mounted always, regardless of whether the map modal is open —
     // closing PlayerMapModal must not stop location reporting.
@@ -668,7 +668,7 @@ const PlayerGame = () => {
                             </Text>
                         </>
                     )}
-                    {gameBoundary?.enabled && (
+                    {gameBoundary?.enabled && (playerData?.isAlive ?? true) && (
                         <>
                             {permissionState === 'unknown' && (
                                 <Box bg="blue.900" color="white" borderRadius="md" p={3} mb={2}>

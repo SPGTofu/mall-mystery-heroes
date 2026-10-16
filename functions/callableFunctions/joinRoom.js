@@ -120,5 +120,14 @@ exports.joinRoom = functions.https.onCall(async (data, context) => {
         transaction.update(roomRef, {
             joinedUids: FieldValue.arrayUnion(context.auth.uid),
         });
+        transaction.create(roomRef.collection('playerMessages').doc(), {
+            type: 'broadcast',
+            recipient: null,
+            text: `${playerName.trim()} joined the game.`,
+            standings: null,
+            mission: null,
+            sender: null,
+            timestamp: FieldValue.serverTimestamp(),
+        });
     });
 });

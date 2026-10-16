@@ -14,7 +14,7 @@ import { KNOWN_COMMANDS, UNIMPLEMENTED_COMMANDS } from './commands';
 // group] is one slot, not several.
 const TOKEN = /\/\S+|\[[^\]]+\]|\S+/g;
 
-const MISSION_SUBCOMMANDS = ['done', 'end', 'start', 'undo', 'view'];
+const MISSION_SUBCOMMANDS = ['done', 'end'];
 const LEADERBOARD_SUBCOMMANDS = ['send', 'view'];
 const OPEN_SEASON_VALUES = ['start', 'end'];
 
@@ -39,9 +39,7 @@ const ARG_LABELS = {
 const MISSION_ARG_LABELS = {
     done: ['[player_name]', '[mission_index]'],
     end: ['[mission_index]'],
-    start: [],
     undo: [],
-    view: [],
 };
 
 const playerNames = (players) => players.map((player) => player.name);

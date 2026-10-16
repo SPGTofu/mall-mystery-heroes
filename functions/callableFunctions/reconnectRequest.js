@@ -279,6 +279,17 @@ exports.approveReconnectRequest = functions.https.onCall(async (data, context) =
             joinedUids: FieldValue.arrayUnion(requestData.requestingUid),
         });
         transaction.update(requestRef, { status: 'approved' });
+        if (isNewJoinRequest) {
+            transaction.create(roomRef.collection('playerMessages').doc(), {
+                type: 'broadcast',
+                recipient: null,
+                text: `${requestData.playerName} joined the game. Target assignments have been updated.`,
+                standings: null,
+                mission: null,
+                sender: null,
+                timestamp: FieldValue.serverTimestamp(),
+            });
+        }
     });
 });
 
