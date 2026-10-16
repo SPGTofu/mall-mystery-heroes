@@ -144,7 +144,7 @@ const Lobby = () => {
                 </Flex>
             </Flex>
 
-            <Flex direction="column" w="100%" flex="1" bg="black" align="center" overflow="auto">                
+            <Flex direction="column" w="100%" flex="1" bg="black" align="center" overflow="auto">
                 <Flex justify="flex-end" w="98%" mt={1}>
                     <Flex justify="flex-start" flex="1">
                         <GameBoundaryButton roomID={roomID} gameBoundary={gameBoundary} />

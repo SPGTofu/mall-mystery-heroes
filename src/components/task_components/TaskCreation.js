@@ -169,7 +169,7 @@ const TaskCreation = React.forwardRef((props, titleInputRef) => {
                     colorScheme={selectedTaskType === 'Task' ? 'blue' : 'gray'}
                     aria-pressed={selectedTaskType === 'Task'}
                     onClick={() => handleChangeTaskType('Task')}
-                    color = "white"
+                    color="white"
                     borderRadius="3xl"
                 >
                     Task
@@ -180,7 +180,7 @@ const TaskCreation = React.forwardRef((props, titleInputRef) => {
                     colorScheme={selectedTaskType === 'Revival Mission' ? 'blue' : 'gray'}
                     aria-pressed={selectedTaskType === 'Revival Mission'}
                     onClick={() => handleChangeTaskType('Revival Mission')}
-                    color = "white"
+                    color="white"
                     borderRadius="3xl"
                 >
                     Revival Mission
@@ -230,12 +230,12 @@ const styles = {
         size: 'md',
         borderRadius: '2xl',
         m: '2px',
-        mb: '12px'
+        mb: '12px',
     },
     descInput: {
         borderRadius: '2xl',
         m: '2px',
-        mb: '12px'
+        mb: '12px',
     },
     addButton: {
         size: 'md',

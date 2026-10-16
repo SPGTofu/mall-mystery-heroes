@@ -25,7 +25,13 @@ const GMChatMessage = ({ message }) => {
     if (message.type === 'broadcast') {
         return (
             <ListItem mb={2}>
-                <Box bg="purple.900" border="1px solid" borderColor="purple.400" borderRadius="md" p={2}>
+                <Box
+                    bg="purple.900"
+                    border="1px solid"
+                    borderColor="purple.400"
+                    borderRadius="md"
+                    p={2}
+                >
                     <Text as="span" fontWeight="bold" color="yellow.300">
                         GM:
                     </Text>{' '}
@@ -53,7 +59,9 @@ const GMChatMessage = ({ message }) => {
                         height="auto"
                         minW="0"
                         onClick={() => setIsPhotoOpen(true)}
-                        aria-label={message.isFunPhoto ? 'View larger fun photo' : 'View larger photo'}
+                        aria-label={
+                            message.isFunPhoto ? 'View larger fun photo' : 'View larger photo'
+                        }
                     >
                         <Image
                             src={message.photoUrl}
@@ -63,14 +71,23 @@ const GMChatMessage = ({ message }) => {
                             cursor="zoom-in"
                         />
                     </Button>
-                    <Modal isOpen={isPhotoOpen} onClose={() => setIsPhotoOpen(false)} size="6xl" isCentered>
+                    <Modal
+                        isOpen={isPhotoOpen}
+                        onClose={() => setIsPhotoOpen(false)}
+                        size="6xl"
+                        isCentered
+                    >
                         <ModalOverlay />
                         <ModalContent bg="gray.900" maxW="90vw">
                             <ModalCloseButton aria-label="Close enlarged photo" zIndex={1} />
                             <ModalBody p={2} display="flex" justifyContent="center">
                                 <Image
                                     src={message.photoUrl}
-                                    alt={message.isFunPhoto ? 'Enlarged fun photo' : 'Enlarged photo submission'}
+                                    alt={
+                                        message.isFunPhoto
+                                            ? 'Enlarged fun photo'
+                                            : 'Enlarged photo submission'
+                                    }
                                     maxH="85vh"
                                     maxW="100%"
                                     objectFit="contain"

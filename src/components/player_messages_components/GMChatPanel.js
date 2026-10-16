@@ -40,7 +40,10 @@ const GMChatPanel = ({ roomID }) => {
     // would corrupt future merges. messages (below) is the filtered,
     // rendered view.
     const messages = useMemo(
-        () => allMessages.filter((message) => ['chat', 'broadcast', 'killPhoto'].includes(message.type)),
+        () =>
+            allMessages.filter((message) =>
+                ['chat', 'broadcast', 'killPhoto'].includes(message.type)
+            ),
         [allMessages]
     );
 

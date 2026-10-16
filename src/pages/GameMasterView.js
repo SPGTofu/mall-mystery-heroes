@@ -291,7 +291,13 @@ const GameMasterView = () => {
                     </Box>
 
                     <Box sx={styles.logsWrapper}>
-                        <Tabs display="flex" flexDirection="column" h="100%" minH={0} variant="unstyled">
+                        <Tabs
+                            display="flex"
+                            flexDirection="column"
+                            h="100%"
+                            minH={0}
+                            variant="unstyled"
+                        >
                             <TabList flexShrink={0}>
                                 <Tab sx={styles.tabHeader}>Player Chat</Tab>
                                 <Tab sx={styles.tabHeader}>Logs</Tab>
@@ -301,7 +307,11 @@ const GameMasterView = () => {
                                     <GMChatPanel roomID={roomID} />
                                 </TabPanel>
                                 <TabPanel h="100%" display="flex" flexDirection="column" p={2}>
-                                    <Box sx={styles.logsBox} ref={logsBoxRef} data-testid="logs-box">
+                                    <Box
+                                        sx={styles.logsBox}
+                                        ref={logsBoxRef}
+                                        data-testid="logs-box"
+                                    >
                                         <Log logList={logList} />
                                     </Box>
                                 </TabPanel>
@@ -368,7 +378,7 @@ const styles = {
         size: 'lg',
         textAlign: 'center',
         mb: '4px',
-        fontSize: "26px"
+        fontSize: '26px',
     },
     logsWrapper: {
         borderWidth: '2px',
@@ -424,5 +434,5 @@ const styles = {
         _selected: { borderBottom: '2px solid', borderColor: 'blue.300', color: 'blue.300' },
         borderBottom: '2px solid',
         borderColor: 'gray.300',
-    }
+    },
 };

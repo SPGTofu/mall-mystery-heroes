@@ -1,5 +1,15 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { Tabs, Tab, Accordion, TabPanels, TabPanel, TabList, Button, Box, Divider } from '@chakra-ui/react';
+import {
+    Tabs,
+    Tab,
+    Accordion,
+    TabPanels,
+    TabPanel,
+    TabList,
+    Button,
+    Box,
+    Divider,
+} from '@chakra-ui/react';
 import TaskAccordion from './TaskAccordion';
 import { fetchTasksByCompletionForRoom, fetchTasksQueryForRoom } from '../firebase_calls/dbCalls';
 import { onSnapshot } from 'firebase/firestore';
@@ -70,7 +80,13 @@ const TaskList = ({ onStartMission }) => {
                 </TabPanels>
             </Tabs>
             <Divider />
-            <Button borderRadius="3xl" onClick={onStartMission} colorScheme="blue" my={2} flexShrink={0}>
+            <Button
+                borderRadius="3xl"
+                onClick={onStartMission}
+                colorScheme="blue"
+                my={2}
+                flexShrink={0}
+            >
                 Start Mission
             </Button>
         </Box>

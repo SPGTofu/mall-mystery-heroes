@@ -61,7 +61,7 @@ const KillPhotoModal = ({
         selectedOption === 'fun' ||
         combinedOptions.some((option) => option.value === selectedOption)
             ? selectedOption
-            : combinedOptions[0]?.value ?? 'fun';
+            : (combinedOptions[0]?.value ?? 'fun');
 
     return (
         <Modal isOpen={isOpen} onClose={onClose}>
@@ -112,11 +112,15 @@ const KillPhotoModal = ({
                                 </optgroup>
                             )}
                             <optgroup label="Socials">
-                                <option key="fun" value="fun">Just for fun</option>
+                                <option key="fun" value="fun">
+                                    Just for fun
+                                </option>
                             </optgroup>
                         </Select>
                     ) : (
-                        <Text color="gray.400">No open targets or missions; this will be a fun photo.</Text>
+                        <Text color="gray.400">
+                            No open targets or missions; this will be a fun photo.
+                        </Text>
                     )}
                 </ModalBody>
                 <ModalFooter>

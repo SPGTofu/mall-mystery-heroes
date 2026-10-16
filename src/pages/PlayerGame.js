@@ -48,7 +48,7 @@ import { normalizePlayerName, resolvePlayerDisplayName } from '../game/playerNam
 import useBoundaryLocation from '../hooks/useBoundaryLocation';
 import PlayerMapModal from '../components/map_components/PlayerMapModal';
 import LeaderboardIcon from '../assets/leaderboard-white.png';
-import ExitIcon from '../assets/exit.png'; 
+import ExitIcon from '../assets/exit.png';
 import MissionIcon from '../assets/mission-white.png';
 import ShopIcon from '../assets/shop-white.png';
 import LocationIcon from '../assets/location-white.png';
@@ -541,13 +541,7 @@ const PlayerGame = () => {
                     <Heading size="md">
                         {playerName || 'You'} joined {roomID}
                     </Heading>
-                    <img
-                        src={ExitIcon}
-                        alt=""
-                        width={40}
-                        height={40}
-                        onClick={handleLeaveClick}
-                    />
+                    <img src={ExitIcon} alt="" width={40} height={40} onClick={handleLeaveClick} />
                 </HStack>
                 <HStack spacing={2} justifyContent="flex-start" width="100%">
                     {/* Top-left per POWER_UPS_SPEC.md — only while there's a
@@ -561,17 +555,11 @@ const PlayerGame = () => {
                                 height={36}
                                 onClick={onShopOpen}
                             />
-                            <Divider m={0} ml={2} orientation="vertical" color="white" h="70%"/>
+                            <Divider m={0} ml={2} orientation="vertical" color="white" h="70%" />
                         </>
                     )}
-                    <img
-                        src={MissionIcon}
-                        alt=""
-                        width={44}
-                        height={44}
-                        onClick={onMissionsOpen}
-                    />
-                    <Divider m={0} mr={2} orientation="vertical" color="white" h="70%"/>
+                    <img src={MissionIcon} alt="" width={44} height={44} onClick={onMissionsOpen} />
+                    <Divider m={0} mr={2} orientation="vertical" color="white" h="70%" />
                     <img
                         src={LeaderboardIcon}
                         alt=""
@@ -580,8 +568,8 @@ const PlayerGame = () => {
                         onClick={onLeaderboardOpen}
                     />
                     {gameBoundary?.enabled && (
-                        <>             
-                            <Divider m={0} mx={2} orientation="vertical" color="white" h="70%"/>
+                        <>
+                            <Divider m={0} mx={2} orientation="vertical" color="white" h="70%" />
                             <img
                                 src={LocationIcon}
                                 alt=""
