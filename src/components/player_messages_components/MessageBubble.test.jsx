@@ -295,7 +295,9 @@ describe('MessageBubble', () => {
             target: null,
         });
 
-        expect(screen.getByText(/Alice.*Photo submission/)).toBeInTheDocument();
+        expect(
+            screen.getAllByText((_, element) => element.textContent === 'Alice · Photo submission')
+        ).not.toHaveLength(0);
         expect(screen.queryByText(/going for/i)).not.toBeInTheDocument();
         expect(screen.getByAltText('Kill photo submission')).toHaveAttribute(
             'src',
