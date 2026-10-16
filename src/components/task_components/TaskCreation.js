@@ -9,7 +9,6 @@ import {
     NumberDecrementStepper,
     NumberIncrementStepper,
     NumberInputStepper,
-    Tooltip,
 } from '@chakra-ui/react';
 import CreateAlert from '../CreateAlert';
 import {
