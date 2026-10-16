@@ -202,7 +202,8 @@ describe('MessageComposer', () => {
         mountComposer();
         const input = screen.getByPlaceholderText('Type a message...');
 
-        await userEvent.type(input, 'hi{Enter}');
+        await userEvent.type(input, 'hi');
+        await userEvent.click(screen.getByRole('button', { name: 'Send' }));
 
         await waitFor(() => expect(submitChatMessage).toHaveBeenCalled());
         expect(input).toHaveValue('');

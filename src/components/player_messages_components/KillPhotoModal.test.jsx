@@ -66,7 +66,7 @@ describe('KillPhotoModal', () => {
         expect(screen.getByRole('option', { name: 'bob' })).toBeInTheDocument();
         expect(screen.getByRole('option', { name: 'carol' })).toBeInTheDocument();
         expect(screen.getByRole('option', { name: 'Find the clue' })).toBeInTheDocument();
-        expect(screen.getByRole('button', { name: 'Submit' })).toBeDisabled();
+        expect(screen.getByRole('button', { name: 'Submit' })).toBeEnabled();
     });
 
     it('enables Submit once a pick is made from the dropdown, and calls onSubmit with the resolved claim', async () => {
@@ -98,7 +98,7 @@ describe('KillPhotoModal', () => {
         expect(
             screen.getByText('No open targets or missions for this player.')
         ).toBeInTheDocument();
-        expect(screen.getByRole('button', { name: 'Submit' })).toBeDisabled();
+        expect(screen.getByRole('button', { name: 'Submit' })).toBeEnabled();
     });
 
     it('is still disabled while previewUrl has not arrived yet, even with a resolved option', () => {

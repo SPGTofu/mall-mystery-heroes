@@ -20,6 +20,7 @@ import RemapPlayers from '../RemapPlayers';
 import { completeMission } from '../completeMission';
 import { executeKill } from '../executeKill';
 import { removePlayer } from '../removePlayer';
+import { undoMissionCommand } from '../undoMissionCommand';
 import { parseCommand, UNIMPLEMENTED_COMMANDS } from '../../game/commands';
 import { buildLeaderboardStandings } from '../../game/leaderboard';
 import { normalizePlayerName, resolvePlayerDisplayName } from '../../game/playerNames';
@@ -194,6 +195,30 @@ const handleCommandExecution = async (
             case '/mission':
                 arg = args[0] ? args[0].toLowerCase() : '';
                 switch (arg) {
+                    case 'start':
+                        xecutionContext.handleShowMissionCreation?.();
+                        break;
+
+                    case 'view':
+                        xecutionContext.handleShowMissionList?.();
+                        break;
+
+                    case 'undo': {
+                        const announcement = 'Undo: the last mission completion was reverted';
+                        await undoMissionCommand(roomID);
+                        await addLog(announcement, 'blue.200');
+                        await addPlayerMessageForRoom(
+                            {
+                                type: 'broadcast',
+                                recipient: null,
+                                text: announcement,
+                                standings: null,
+                            },
+                            roomID
+                        );
+                        break;
+                    }
+
                     case 'done':
                         playerName = args[1] ? normalizePlayerName(args[1]) : '';
                         missionIndex = args[2] ? Number(args[2]) : -1;

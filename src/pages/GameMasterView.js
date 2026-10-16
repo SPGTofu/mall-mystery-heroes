@@ -17,6 +17,7 @@ import {
 } from '@chakra-ui/react';
 import TaskCreationModal from '../components/task_components/TaskCreationModal';
 import TaskList from '../components/task_components/TaskList';
+import TaskListModal from '../components/task_components/TaskListModal';
 import LeaderboardModal from '../components/game_end_components/LeaderboardModal';
 import HeaderExecution from '../components/header_components/HeaderExecution';
 import Log from '../components/logs_components/Log';
@@ -43,6 +44,7 @@ const GameMasterView = () => {
     const [logList, setLogList] = useState([]);
     const createAlert = CreateAlert();
     const [showTaskCreationModal, setShowTaskCreationModal] = useState(false);
+    const [showTaskListModal, setShowTaskListModal] = useState(false);
     const [showLeaderboardModal, setShowLeaderboardModal] = useState(false);
     const [isGameActive, setIsGameActive] = useState(true);
     const [gameBoundary, setGameBoundary] = useState(undefined);
@@ -203,6 +205,10 @@ const GameMasterView = () => {
         setShowTaskCreationModal(true);
     };
 
+    const handleShowMissionList = () => {
+        setShowTaskListModal(true);
+    };
+
     const handleShowLeaderboardView = () => {
         setShowLeaderboardModal(true);
     };
@@ -243,6 +249,8 @@ const GameMasterView = () => {
         handleNewTaskAdded,
         handleSetShowMessageToTrue,
         handleShowLeaderboardView,
+        handleShowMissionCreation,
+        handleShowMissionList,
         handleOpenSznstarted,
         handleOpenSznended,
         addLog,
@@ -255,6 +263,10 @@ const GameMasterView = () => {
                     isOpen={showTaskCreationModal}
                     onClose={() => setShowTaskCreationModal(false)}
                     handleNewTaskAdded={handleNewTaskAdded}
+                />
+                <TaskListModal
+                    isOpen={showTaskListModal}
+                    onClose={() => setShowTaskListModal(false)}
                 />
                 {/* TaskAccordion needs addLog for mission edit/delete
                     announcements, so it shares the execution context here. */}

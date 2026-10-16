@@ -143,7 +143,7 @@ describe('optional completion cap (bug report)', () => {
         mountTaskCreation();
 
         await fillOutRevivalMissionTask('Find the clue');
-        await userEvent.type(screen.getByPlaceholderText('Max completions'), '5');
+        await userEvent.type(screen.getByPlaceholderText('Max Players'), '5');
         await userEvent.click(screen.getByRole('button', { name: 'Add' }));
 
         await waitFor(() =>

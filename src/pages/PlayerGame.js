@@ -541,42 +541,43 @@ const PlayerGame = () => {
                     <Heading size="md">
                         {playerName || 'You'} joined {roomID}
                     </Heading>
-                    <img src={ExitIcon} alt="" width={40} height={40} onClick={handleLeaveClick} />
+                    <Button
+                        variant="unstyled"
+                        aria-label="Leave"
+                        onClick={handleLeaveClick}
+                        display="flex"
+                    >
+                        <img src={ExitIcon} alt="" width={40} height={40} />
+                    </Button>
                 </HStack>
                 <HStack spacing={2} justifyContent="flex-start" width="100%">
                     {/* Top-left per POWER_UPS_SPEC.md — only while there's a
                         game to spend points in, and only for the living. */}
                     {canShop && (
                         <>
-                            <img
-                                src={ShopIcon}
-                                alt=""
-                                width={36}
-                                height={36}
-                                onClick={onShopOpen}
-                            />
+                            <Button variant="unstyled" aria-label="Shop" onClick={onShopOpen}>
+                                <img src={ShopIcon} alt="" width={36} height={36} />
+                            </Button>
                             <Divider m={0} ml={2} orientation="vertical" color="white" h="70%" />
                         </>
                     )}
-                    <img src={MissionIcon} alt="" width={44} height={44} onClick={onMissionsOpen} />
+                    <Button variant="unstyled" aria-label="Missions" onClick={onMissionsOpen}>
+                        <img src={MissionIcon} alt="" width={44} height={44} />
+                    </Button>
                     <Divider m={0} mr={2} orientation="vertical" color="white" h="70%" />
-                    <img
-                        src={LeaderboardIcon}
-                        alt=""
-                        width={40}
-                        height={40}
-                        onClick={onLeaderboardOpen}
-                    />
+                    <Button variant="unstyled" aria-label="Leaderboard" onClick={onLeaderboardOpen}>
+                        <img src={LeaderboardIcon} alt="" width={40} height={40} />
+                    </Button>
                     {gameBoundary?.enabled && (
                         <>
                             <Divider m={0} mx={2} orientation="vertical" color="white" h="70%" />
-                            <img
-                                src={LocationIcon}
-                                alt=""
-                                width={18}
-                                height={18}
+                            <Button
+                                variant="unstyled"
+                                aria-label="View Game Map"
                                 onClick={onMapOpen}
-                            />
+                            >
+                                <img src={LocationIcon} alt="" width={18} height={18} />
+                            </Button>
                         </>
                     )}
                 </HStack>
