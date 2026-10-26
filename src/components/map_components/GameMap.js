@@ -168,6 +168,7 @@ const GameMap = ({
                 // fire again on a later load event.
                 hasFitRef.current = true;
                 if (navigator.geolocation) {
+                    console.log('GameMap: requesting geolocation for initial map view');
                     navigator.geolocation.getCurrentPosition(
                         (position) => {
                             map.jumpTo({

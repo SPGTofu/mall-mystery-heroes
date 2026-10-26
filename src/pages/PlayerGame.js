@@ -12,6 +12,7 @@ import {
     Flex,
     Heading,
     HStack,
+    Image,
     Modal,
     ModalBody,
     ModalCloseButton,
@@ -528,56 +529,98 @@ const PlayerGame = () => {
 
     return (
         <Flex
-            height="100vh"
+            minH="100vh"
+            height="100dvh"
             direction="column"
-            p={4}
-            // Dark red, and it stays — closing the "game ended" popup below
-            // dismisses the popup, not this. Player-facing only; the GM
-            // console (GameMasterView.js) is untouched.
-            bg={!isGameActive ? 'red.900' : undefined}
+            bg={!isGameActive ? 'red.950' : 'gray.950'}
+            color="white"
+            overflow="hidden"
         >
-            <Flex direction="column" gap={0} mb={2}>
-                <HStack spacing={2} justifyContent="space-between" flex="1" minW="0">
-                    <Heading size="md">
-                        {playerName || 'You'} joined {roomID}
-                    </Heading>
-                    <Button
-                        variant="unstyled"
-                        aria-label="Leave"
+            <Flex
+                as="header"
+                direction="column"
+                gap={3}
+                px={{ base: 4, md: 6 }}
+                pt={{ base: 3, md: 4 }}
+                pb={4}
+                bg="gray.900"
+                borderBottom="1px solid"
+                borderColor="whiteAlpha.200"
+                boxShadow="0 8px 24px rgba(0,0,0,0.22)"
+                flexShrink={0}
+            >
+                <HStack spacing={3} justifyContent="space-between" minW="0">
+                    <Box minW="0">
+                        <Text fontSize="xs" color="whiteAlpha.600" textTransform="uppercase" letterSpacing="0.14em">
+                            Mall Mystery Heroes
+                        </Text>
+                        <Heading size="sm" noOfLines={1}>
+                            {playerName || 'You'} <Text as="span" color="whiteAlpha.600" fontWeight="normal">· Lobby {roomID}</Text>
+                        </Heading>
+                    </Box>
+                    <Image
+                        src={ExitIcon}
+                        alt="Leave Game"
+                        width={30}
+                        height={30}
                         onClick={handleLeaveClick}
-                        display="flex"
-                    >
-                        <img src={ExitIcon} alt="" width={40} height={40} />
-                    </Button>
+                        style={{ cursor: 'pointer' }}
+                        _hover={{ opacity: 0.7 }}
+                        _pressed={{ opacity: 0.5 }}
+                    />
                 </HStack>
-                <HStack spacing={2} justifyContent="flex-start" width="100%">
+                <HStack spacing={2} justifyContent="flex-start" width="100%" overflowX="auto">
                     {/* Top-left per POWER_UPS_SPEC.md — only while there's a
                         game to spend points in, and only for the living. */}
                     {canShop && (
                         <>
-                            <Button variant="unstyled" aria-label="Shop" onClick={onShopOpen}>
-                                <img src={ShopIcon} alt="" width={36} height={36} />
-                            </Button>
-                            <Divider m={0} ml={2} orientation="vertical" color="white" h="70%" />
+                            <Image
+                                src={ShopIcon}
+                                alt=""
+                                width={30}
+                                height={30}
+                                onClick={onShopOpen}
+                                style={{ cursor: 'pointer' }}
+                                _hover={{ opacity: 0.7 }}
+                                _pressed={{ opacity: 0.5 }}
+                            />
+                            <Divider orientation="vertical" mx={3} borderColor="whiteAlpha.400" />
                         </>
                     )}
-                    <Button variant="unstyled" aria-label="Missions" onClick={onMissionsOpen}>
-                        <img src={MissionIcon} alt="" width={44} height={44} />
-                    </Button>
-                    <Divider m={0} mr={2} orientation="vertical" color="white" h="70%" />
-                    <Button variant="unstyled" aria-label="Leaderboard" onClick={onLeaderboardOpen}>
-                        <img src={LeaderboardIcon} alt="" width={40} height={40} />
-                    </Button>
+                    <Image
+                        src={MissionIcon}
+                        alt="Missions"
+                        width={31}
+                        height={31}
+                        onClick={onMissionsOpen}
+                        style={{ cursor: 'pointer' }}
+                        _hover={{ opacity: 0.7 }}
+                        _pressed={{ opacity: 0.5 }}
+                    />
+                    <Divider orientation="vertical" mx={3} borderColor="whiteAlpha.400" />
+                    <Image
+                        src={LeaderboardIcon}
+                        alt="Leaderboard"
+                        width={30}
+                        height={30}
+                        onClick={onLeaderboardOpen}
+                        style={{ cursor: 'pointer' }}
+                        _hover={{ opacity: 0.7 }}
+                        _pressed={{ opacity: 0.5 }}
+                    />
                     {gameBoundary?.enabled && (
                         <>
-                            <Divider m={0} mx={2} orientation="vertical" color="white" h="70%" />
-                            <Button
-                                variant="unstyled"
-                                aria-label="View Game Map"
+                            <Divider orientation="vertical" mx={3} borderColor="whiteAlpha.400" />
+                            <Image
+                                src={LocationIcon}
+                                alt="View Game Map"
+                                width={30}
+                                height={30}
                                 onClick={onMapOpen}
-                            >
-                                <img src={LocationIcon} alt="" width={18} height={18} />
-                            </Button>
+                                style={{ cursor: 'pointer' }}
+                                _hover={{ opacity: 0.7 }}
+                                _pressed={{ opacity: 0.5 }}
+                            />
                         </>
                     )}
                 </HStack>
@@ -639,13 +682,16 @@ const PlayerGame = () => {
                 either way, so players can keep talking on the way back. */}
             {isGameActive && (
                 <>
-                    {!gameStarted && <Text mb={4}>Waiting for the host to start...</Text>}
+                    {!gameStarted && <Box mx={4} mt={4} p={4} bg="whiteAlpha.100" borderRadius="xl"><Text color="whiteAlpha.800">Waiting for the host to start...</Text></Box>}
                     {gameStarted && playerData?.isAlive && (
-                        <Text mb={4}>
-                            {(playerData.targets ?? []).length > 0
-                                ? `Your target: ${(playerData.targets ?? []).join(', ')}`
-                                : 'Waiting for your target...'}
-                        </Text>
+                        <Box mx={4} mt={4} px={4} py={3} bg="purple.900" border="1px solid" borderColor="purple.700" borderRadius="xl">
+                            <Text fontSize="xs" color="purple.200" textTransform="uppercase" letterSpacing="wide" mb={1}>Current target</Text>
+                            <Text fontSize="lg" fontWeight="semibold">
+                                {(playerData.targets ?? []).length > 0
+                                    ? (playerData.targets ?? []).join(', ')
+                                    : 'Waiting for your target...'}
+                            </Text>
+                        </Box>
                     )}
                     {gameStarted && playerData && !playerData.isAlive && (
                         <>
