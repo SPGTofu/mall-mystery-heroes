@@ -206,7 +206,7 @@ const planEffect = async ({ transaction, roomRef, itemId, buyer, buyerDoc, targe
         playerMessage({
             type: 'powerUpPing',
             recipient,
-            text: pingMessageText({ itemId, pings }),
+            text: pingMessageText({ itemId, pings, buyerName: buyer.name }),
             pingedPlayer: recipient ? null : pings[0].name,
             pings,
         });

@@ -638,7 +638,7 @@ const PlayerGame = () => {
                             <Image
                                 src={LocationIcon}
                                 alt="View Game Map"
-                                width={6}
+                                width={5}
                                 height={8}
                                 onClick={onMapOpen}
                                 style={{ cursor: 'pointer' }}
