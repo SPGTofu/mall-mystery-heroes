@@ -209,7 +209,7 @@ describe('purchasePowerUp', () => {
             expect(await pings()).toEqual([
                 expect.objectContaining({
                     recipient: null,
-                    text: '📍 bob has been pinged!',
+                    text: '📍 bob has been pinged by alice!',
                     pingedPlayer: 'bob',
                     pings: [
                         expect.objectContaining({
@@ -223,7 +223,7 @@ describe('purchasePowerUp', () => {
             ]);
             const logLines = (await logs()).map((l) => l.log);
             expect(logLines).toContain(
-                'alice bought Global ping: picked player (-6 pts) — pinged bob'
+                'alice bought Global Player Ping (-6 pts) — pinged bob'
             );
             // Fresh position — no GPS alert for the GM.
             expect(logLines.some((l) => l.startsWith('⚠️'))).toBe(false);
@@ -341,7 +341,7 @@ describe('purchasePowerUp', () => {
                 expect(alice.score).toBeLessThanOrEqual(66);
                 expect(alice.powerUpCooldowns['mystery-box']).toBeDefined();
                 expect((await logs()).map((l) => l.log)).toContain(
-                    `alice bought Mystery box (-4 pts) — rolled ${data.mysteryBox.label}`
+                    `alice bought Mystery Box (-4 pts) — rolled ${data.mysteryBox.label}`
                 );
                 // A needs-a-player item waits for the claim; nothing else does.
                 expect(alice.pendingMysteryItem !== undefined).toBe(data.mysteryBox.needsTarget);
