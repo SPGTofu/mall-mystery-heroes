@@ -222,9 +222,7 @@ describe('purchasePowerUp', () => {
                 }),
             ]);
             const logLines = (await logs()).map((l) => l.log);
-            expect(logLines).toContain(
-                'alice bought Global Player Ping (-6 pts) — pinged bob'
-            );
+            expect(logLines).toContain('alice bought Global Player Ping (-6 pts) — pinged bob');
             // Fresh position — no GPS alert for the GM.
             expect(logLines.some((l) => l.startsWith('⚠️'))).toBe(false);
         });
