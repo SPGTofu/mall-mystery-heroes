@@ -103,9 +103,14 @@ const PowerUpShopModal = ({
             <ModalContent bg="#202030" color="white">
                 <ModalHeader>
                     Shop
-                    <Text fontSize="md" fontWeight="normal" color="yellow.300">
-                        Your points: {Number(score) || 0}
-                    </Text>
+                    <Box flexDirection="row" display="flex" justifyContent="space-between">
+                        <Text fontSize="md" fontWeight="normal" color="yellow.300">
+                            Your points: {Number(score) || 0}
+                        </Text>
+                        <Text fontSize="md" fontWeight="normal" color="gray.400">
+                            CD = cooldown
+                        </Text>
+                    </Box>
                     {horcruxActive && (
                         <Text fontSize="sm" fontWeight="normal" color="purple.300">
                             🛡️ Horcrux active
