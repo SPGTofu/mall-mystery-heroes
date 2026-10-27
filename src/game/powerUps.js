@@ -56,7 +56,7 @@ const POWER_UPS = [
     },
     {
         id: 'block-camera',
-        name: "Camera Block",
+        name: 'Camera Block',
         description: 'Block a player from taking pictures for 30 seconds.',
         cost: 7,
         rarity: 'rare',
@@ -66,7 +66,8 @@ const POWER_UPS = [
     {
         id: 'horcrux',
         name: 'Horcrux',
-        description: 'The next time you would be eliminated, your horcrux will be destroyed instead.',
+        description:
+            'The next time you would be eliminated, your horcrux will be destroyed instead.',
         cost: 20,
         rarity: 'mythic',
         cooldownSeconds: 360,

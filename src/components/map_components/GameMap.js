@@ -150,7 +150,7 @@ const GameMap = ({
 
     const handleLoad = useCallback(
         (event) => {
-            console.log("triggering")
+            console.log('triggering');
             const map = event.target;
             // Belt-and-suspenders: SATELLITE_STYLE/STANDARD_STYLE above
             // are already pre-globe style IDs, so this should already

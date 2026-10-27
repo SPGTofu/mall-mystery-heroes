@@ -33,9 +33,7 @@ const ShopItemCard = ({ item, secondsLeft, fractionLeft, disabledReason, onBuy, 
                         {item.description}
                     </Text>
                 )}
-                <Box h={10}>
-                    {children /* Step 3 puts the player picker here */}
-                </Box>
+                <Box h={10}>{children /* Step 3 puts the player picker here */}</Box>
             </VStack>
             <Box display="flex" flexDirection="column" justifyContent="center" mt="auto" pt={2}>
                 <Button
