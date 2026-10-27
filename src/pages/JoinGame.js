@@ -79,7 +79,7 @@ const JoinGame = () => {
                     value={playerName}
                     onChange={(e) => setPlayerName(e.target.value)}
                     borderWidth="3px"
-                    maxLength={40}
+                    maxLength={16}
                 />
                 <Button type="submit" colorScheme="teal" isLoading={isSubmitting}>
                     Join

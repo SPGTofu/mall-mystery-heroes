@@ -706,7 +706,7 @@ const PlayerGame = () => {
                 either way, so players can keep talking on the way back. */}
             {isGameActive && (
                 <Box boxShadow="0 2px 4px rgba(146, 142, 142, 0.22)">
-                    {!gameStarted && <Box mx={4} mt={4} p={4} bg="whiteAlpha.100" borderRadius="xl"><Text color="whiteAlpha.800">Waiting for the host to start...</Text></Box>}
+                    {!gameStarted && <Box mx={4} my={4} p={4} bg="whiteAlpha.100" borderRadius="xl"><Text color="white">Waiting for the host to start...</Text></Box>}
                     {gameStarted && playerData && !playerData.isAlive && (
                         <Box textAlign="center">
                             <Heading size="md" my={2} color="red.500">
