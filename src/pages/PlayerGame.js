@@ -18,6 +18,7 @@ import {
     Flex,
     Heading,
     HStack,
+    IconButton,
     Image,
     Avatar,
     Modal,
@@ -288,7 +289,7 @@ const PlayerGame = () => {
             setPlayers(
                 snapshot.docs.map((doc) => ({
                     name: doc.data().name,
-                    avatarUrl: doc.data().avatarUrl || '',
+                    ...(doc.data().avatarUrl ? { avatarUrl: doc.data().avatarUrl } : {}),
                     score: doc.data().score,
                     targets: doc.data().targets,
                     openSeason: doc.data().openSeason,
@@ -596,15 +597,12 @@ const PlayerGame = () => {
                             </Text>
                         </Heading>
                     </Box>
-                    <Image
-                        src={ExitIcon}
-                        alt="Leave Game"
-                        width={8}
-                        height={8}
+                    <IconButton
+                        aria-label="Leave"
+                        title="Leave Game"
+                        icon={<Image src={ExitIcon} alt="" width={8} height={8} />}
                         onClick={handleLeaveClick}
-                        style={{ cursor: 'pointer' }}
-                        _hover={{ opacity: 0.7 }}
-                        _pressed={{ opacity: 0.5 }}
+                        variant="ghost"
                     />
                 </HStack>
                 {isGameActive && gameStarted && playerData?.isAlive && (
@@ -705,12 +703,25 @@ const PlayerGame = () => {
                     {playerData && (
                         <>
                             <Box display="flex" flexDirection="column" alignItems="center">
-                                <Avatar
-                                    size="sm"
-                                    name={playerName}
-                                    src={playerData.avatarUrl}
+                                <IconButton
+                                    aria-label={
+                                        playerData.avatarUrl ? 'Change my photo' : 'Add my photo'
+                                    }
+                                    title={
+                                        playerData.avatarUrl ? 'Change my photo' : 'Add my photo'
+                                    }
+                                    icon={
+                                        <Avatar
+                                            size="sm"
+                                            name={playerName}
+                                            src={playerData.avatarUrl}
+                                        />
+                                    }
                                     onClick={() => avatarInputRef.current?.click()}
                                     isLoading={avatarBusy}
+                                    variant="ghost"
+                                    minW={10}
+                                    p={0}
                                 />
                                 <input
                                     ref={avatarInputRef}
@@ -729,39 +740,27 @@ const PlayerGame = () => {
                         game to spend points in, and only for the living. */}
                     {canShop && (
                         <>
-                            <Image
-                                src={ShopIcon}
-                                alt=""
-                                width={8}
-                                height={8}
+                            <IconButton
+                                aria-label="Shop"
+                                icon={<Image src={ShopIcon} alt="" width={8} height={8} />}
                                 onClick={onShopOpen}
-                                style={{ cursor: 'pointer' }}
-                                _hover={{ opacity: 0.7 }}
-                                _pressed={{ opacity: 0.5 }}
+                                variant="ghost"
                             />
                             <Divider orientation="vertical" mx={3} borderColor="whiteAlpha.400" />
                         </>
                     )}
-                    <Image
-                        src={MissionIcon}
-                        alt="Missions"
-                        width={10}
-                        height={10}
+                    <IconButton
+                        aria-label="Missions"
+                        icon={<Image src={MissionIcon} alt="" width={10} height={10} />}
                         onClick={onMissionsOpen}
-                        style={{ cursor: 'pointer' }}
-                        _hover={{ opacity: 0.7 }}
-                        _pressed={{ opacity: 0.5 }}
+                        variant="ghost"
                     />
                     <Divider orientation="vertical" mx={3} borderColor="whiteAlpha.400" />
-                    <Image
-                        src={LeaderboardIcon}
-                        alt="Leaderboard"
-                        width={10}
-                        height={10}
+                    <IconButton
+                        aria-label="Leaderboard"
+                        icon={<Image src={LeaderboardIcon} alt="" width={10} height={10} />}
                         onClick={onLeaderboardOpen}
-                        style={{ cursor: 'pointer' }}
-                        _hover={{ opacity: 0.7 }}
-                        _pressed={{ opacity: 0.5 }}
+                        variant="ghost"
                     />
                     {gameBoundary?.enabled && (
                         <>
@@ -771,15 +770,11 @@ const PlayerGame = () => {
                                 mr={4}
                                 borderColor="whiteAlpha.400"
                             />
-                            <Image
-                                src={LocationIcon}
-                                alt="View Game Map"
-                                width={5}
-                                height={8}
+                            <IconButton
+                                aria-label="View Game Map"
+                                icon={<Image src={LocationIcon} alt="" width={5} height={8} />}
                                 onClick={onMapOpen}
-                                style={{ cursor: 'pointer' }}
-                                _hover={{ opacity: 0.7 }}
-                                _pressed={{ opacity: 0.5 }}
+                                variant="ghost"
                             />
                         </>
                     )}

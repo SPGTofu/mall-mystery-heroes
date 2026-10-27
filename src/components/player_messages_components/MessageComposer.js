@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Box, Flex, Image, Textarea, Button, VisuallyHidden } from '@chakra-ui/react';
+import { Box, Button, Flex, Image, Textarea, VisuallyHidden } from '@chakra-ui/react';
 import { submitChatMessage } from '../submitChatMessage';
 import { submitKillPhoto } from '../submitKillPhoto';
 import { compressImage } from '../../utils/compressImage';
@@ -263,15 +263,20 @@ const MessageComposer = ({
                     )}
                 </Button>
             </Box>
-            <Image
-                src={enterIcon}
-                alt="Send message"
+            <Button
+                aria-label="Send"
+                variant="ghost"
                 onClick={handleSend}
-                pressed={{ opacity: 0.7 }}
                 isDisabled={disabled}
                 w={12}
                 h={12}
-            />
+                minW={12}
+                p={0}
+                _hover={{ bg: 'whiteAlpha.200' }}
+                _active={{ opacity: 0.7 }}
+            >
+                <Image src={enterIcon} alt="Send message" w={12} h={12} pointerEvents="none" />
+            </Button>
             <KillPhotoModal
                 isOpen={isPhotoModalOpen}
                 onClose={() => setIsPhotoModalOpen(false)}

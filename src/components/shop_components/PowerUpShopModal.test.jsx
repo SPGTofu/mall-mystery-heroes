@@ -165,7 +165,7 @@ describe('PowerUpShopModal', () => {
             });
             renderShop();
 
-            await userEvent.click(screen.getByRole('button', { name: 'Buy Mystery box' }));
+            await userEvent.click(screen.getByRole('button', { name: 'Buy Mystery Box' }));
 
             expect(await screen.findByText('+5 points')).toBeInTheDocument();
             await userEvent.click(screen.getByRole('button', { name: 'Close' }));
@@ -178,7 +178,7 @@ describe('PowerUpShopModal', () => {
             });
             renderShop();
 
-            await userEvent.click(screen.getByRole('button', { name: 'Buy Mystery box' }));
+            await userEvent.click(screen.getByRole('button', { name: 'Buy Mystery Box' }));
             await userEvent.selectOptions(
                 await screen.findByLabelText('Pick a player for your reward'),
                 'Alice'
