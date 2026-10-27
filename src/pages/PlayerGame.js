@@ -581,11 +581,19 @@ const PlayerGame = () => {
             >
                 <HStack spacing={3} justifyContent="space-between" minW="0">
                     <Box minW="0">
-                        <Text fontSize="xs" color="whiteAlpha.600" textTransform="uppercase" letterSpacing="0.14em">
+                        <Text
+                            fontSize="xs"
+                            color="whiteAlpha.600"
+                            textTransform="uppercase"
+                            letterSpacing="0.14em"
+                        >
                             Mall Mystery Heroes
                         </Text>
                         <Heading size="sm" noOfLines={1}>
-                            {playerName || 'You'} <Text as="span" color="whiteAlpha.600" fontWeight="normal">· Lobby {roomID}</Text>
+                            {playerName || 'You'}{' '}
+                            <Text as="span" color="whiteAlpha.600" fontWeight="normal">
+                                · Lobby {roomID}
+                            </Text>
                         </Heading>
                     </Box>
                     <Image
@@ -615,11 +623,28 @@ const PlayerGame = () => {
                                 onChange={(index) => setIsTargetsAccordionOpen(index === 0)}
                             >
                                 <AccordionItem border="none">
-                                    <AccordionButton px={1} py={0} _hover={{ bg: 'whiteAlpha.100' }}>
-                                        <Box display="flex" flexDirection="column" flex="1" textAlign="left">
-                                            <Text flex="1" textAlign="left" fontSize="sm" fontWeight="semibold">
-                                                Current target{playerData.targets.length === 1 ? '' : 's'}
-                                                {playerData.targets.length > 1 ? ` (${playerData.targets.length})` : ''}
+                                    <AccordionButton
+                                        px={1}
+                                        py={0}
+                                        _hover={{ bg: 'whiteAlpha.100' }}
+                                    >
+                                        <Box
+                                            display="flex"
+                                            flexDirection="column"
+                                            flex="1"
+                                            textAlign="left"
+                                        >
+                                            <Text
+                                                flex="1"
+                                                textAlign="left"
+                                                fontSize="sm"
+                                                fontWeight="semibold"
+                                            >
+                                                Current target
+                                                {playerData.targets.length === 1 ? '' : 's'}
+                                                {playerData.targets.length > 1
+                                                    ? ` (${playerData.targets.length})`
+                                                    : ''}
                                             </Text>
                                             <Fade in={isTargetsAccordionOpen} unmountOnExit>
                                                 <Text fontSize="xs" color="whiteAlpha.600">
@@ -633,21 +658,31 @@ const PlayerGame = () => {
                                         <HStack spacing={1} flexWrap="wrap" rowGap={0}>
                                             {(playerData.targets ?? []).map((targetName) => {
                                                 const target = players.find(
-                                                    (player) => normalizePlayerName(player.name) === normalizePlayerName(targetName)
+                                                    (player) =>
+                                                        normalizePlayerName(player.name) ===
+                                                        normalizePlayerName(targetName)
                                                 );
                                                 return (
                                                     <Button
                                                         key={targetName}
                                                         variant="ghost"
                                                         color="white"
-                                                        leftIcon={<Avatar size="xs" name={targetName} src={target?.avatarUrl} />}
+                                                        leftIcon={
+                                                            <Avatar
+                                                                size="xs"
+                                                                name={targetName}
+                                                                src={target?.avatarUrl}
+                                                            />
+                                                        }
                                                         size="sm"
                                                         minH={7}
                                                         px={2}
                                                         py={0}
                                                         fontSize="sm"
                                                         onClick={() => {
-                                                            setSelectedTarget(target || { name: targetName });
+                                                            setSelectedTarget(
+                                                                target || { name: targetName }
+                                                            );
                                                             targetPhotoDisclosure.onOpen();
                                                         }}
                                                     >
@@ -660,7 +695,9 @@ const PlayerGame = () => {
                                 </AccordionItem>
                             </Accordion>
                         ) : (
-                            <Text fontSize="sm" fontWeight="semibold">Waiting for your target...</Text>
+                            <Text fontSize="sm" fontWeight="semibold">
+                                Waiting for your target...
+                            </Text>
                         )}
                     </Box>
                 )}
@@ -728,7 +765,12 @@ const PlayerGame = () => {
                     />
                     {gameBoundary?.enabled && (
                         <>
-                            <Divider orientation="vertical" mx={3} mr={4} borderColor="whiteAlpha.400" />
+                            <Divider
+                                orientation="vertical"
+                                mx={3}
+                                mr={4}
+                                borderColor="whiteAlpha.400"
+                            />
                             <Image
                                 src={LocationIcon}
                                 alt="View Game Map"
@@ -743,14 +785,24 @@ const PlayerGame = () => {
                     )}
                 </HStack>
             </Flex>
-            <Modal isOpen={targetPhotoDisclosure.isOpen} onClose={targetPhotoDisclosure.onClose} isCentered>
+            <Modal
+                isOpen={targetPhotoDisclosure.isOpen}
+                onClose={targetPhotoDisclosure.onClose}
+                isCentered
+            >
                 <ModalOverlay />
                 <ModalContent bg="gray.800" color="white">
                     <ModalHeader>{selectedTarget?.name}</ModalHeader>
                     <ModalCloseButton />
                     <ModalBody pb={6} textAlign="center">
                         {selectedTarget?.avatarUrl ? (
-                            <Image src={selectedTarget.avatarUrl} alt={`${selectedTarget.name}'s photo`} maxH="65vh" mx="auto" borderRadius="lg" />
+                            <Image
+                                src={selectedTarget.avatarUrl}
+                                alt={`${selectedTarget.name}'s photo`}
+                                maxH="65vh"
+                                mx="auto"
+                                borderRadius="lg"
+                            />
                         ) : (
                             <Text>This player has not added a photo yet.</Text>
                         )}
@@ -814,7 +866,11 @@ const PlayerGame = () => {
                 either way, so players can keep talking on the way back. */}
             {isGameActive && (
                 <Box boxShadow="0 2px 4px rgba(146, 142, 142, 0.22)">
-                    {!gameStarted && <Box mx={4} my={4} p={4} bg="whiteAlpha.100" borderRadius="xl"><Text color="white">Waiting for the host to start...</Text></Box>}
+                    {!gameStarted && (
+                        <Box mx={4} my={4} p={4} bg="whiteAlpha.100" borderRadius="xl">
+                            <Text color="white">Waiting for the host to start...</Text>
+                        </Box>
+                    )}
                     {gameStarted && playerData && !playerData.isAlive && (
                         <Box textAlign="center">
                             <Heading size="md" my={2} color="red.500">
@@ -865,113 +921,99 @@ const PlayerGame = () => {
                         overflowY="auto"
                         zIndex={2}
                     >
-                    {permissionState === 'unknown' && (
-                        <Box bg="blue.900" color="white" borderRadius="md" p={3} mb={2}>
-                            <Text mb={2}>
-                                Turn on location so we can check that you are inside the
-                                game area. The moderator sees your boundary status. Other
-                                players cannot see your location unless you leave the game
-                                area. Keep the game open for location updates.
-                            </Text>
-                            <Button size="sm" onClick={requestPermission}>
-                                Enable Location
-                            </Button>
-                        </Box>
-                    )}
-                    {permissionState === 'denied' && (
-                        <Box bg="orange.800" color="white" borderRadius="md" p={3} mb={2}>
-                            <Text mb={2}>
-                                Location permission was denied. Enable it in your browser or
-                                device settings, then retry.
-                            </Text>
-                            <Button size="sm" onClick={requestPermission}>
-                                Retry
-                            </Button>
-                        </Box>
-                    )}
-                    {permissionState === 'unavailable' && (
-                        <Box bg="orange.800" color="white" borderRadius="md" p={3} mb={2}>
-                            <Text>{UNAVAILABLE_REASON_TEXT.unavailable}</Text>
-                        </Box>
-                    )}
-                    {isApproachingExposure && (
-                        <Box
-                            bg="orange.700"
-                            color="white"
-                            borderRadius="md"
-                            p={2}
-                            mb={2}
-                            textAlign="center"
-                        >
-                            <Text fontWeight="bold">
-                                Return to the game area — your location will be revealed to
-                                everyone in {secondsUntilExposed}s.
-                            </Text>
-                        </Box>
-                    )}
-                    {liveBoundaryStatus.status === 'outside' && (
-                        <Box
-                            bg="red.900"
-                            color="white"
-                            borderRadius="md"
-                            p={2}
-                            mb={2}
-                            textAlign="center"
-                        >
-                            <Text fontWeight="bold">{statusText}</Text>
-                        </Box>
-                    )}
-                    {liveBoundaryStatus.status !== 'outside' &&
-                        liveBoundaryStatus.status !== 'unavailable' &&
-                        !isApproachingExposure && (
-                            <Text
-                                bg="gray.800"
-                                borderRadius="xl"
-                                boxShadow="lg"
-                                p={3}
-                                mb={2}
-                            >
-                                {statusText}
-                            </Text>
+                        {permissionState === 'unknown' && (
+                            <Box bg="blue.900" color="white" borderRadius="md" p={3} mb={2}>
+                                <Text mb={2}>
+                                    Turn on location so we can check that you are inside the game
+                                    area. The moderator sees your boundary status. Other players
+                                    cannot see your location unless you leave the game area. Keep
+                                    the game open for location updates.
+                                </Text>
+                                <Button size="sm" onClick={requestPermission}>
+                                    Enable Location
+                                </Button>
+                            </Box>
                         )}
-                    {/* Suppressed while permissionState is still 'unknown' — the
-                        pre-permission box above already explains why there is
-                        nothing to show yet; stacking both is confusing. */}
-                    {permissionState !== 'unknown' &&
-                        liveBoundaryStatus.status === 'unavailable' && (
+                        {permissionState === 'denied' && (
+                            <Box bg="orange.800" color="white" borderRadius="md" p={3} mb={2}>
+                                <Text mb={2}>
+                                    Location permission was denied. Enable it in your browser or
+                                    device settings, then retry.
+                                </Text>
+                                <Button size="sm" onClick={requestPermission}>
+                                    Retry
+                                </Button>
+                            </Box>
+                        )}
+                        {permissionState === 'unavailable' && (
+                            <Box bg="orange.800" color="white" borderRadius="md" p={3} mb={2}>
+                                <Text>{UNAVAILABLE_REASON_TEXT.unavailable}</Text>
+                            </Box>
+                        )}
+                        {isApproachingExposure && (
                             <Box
-                                bg="orange.800"
+                                bg="orange.700"
                                 color="white"
                                 borderRadius="md"
-                                p={3}
+                                p={2}
                                 mb={2}
+                                textAlign="center"
                             >
-                                <Text mb={showUnavailableRetry ? 2 : 0}>
-                                    Location unavailable: {unavailableText}
-                                    {lastCheckTime &&
-                                        ` Last confirmed at ${lastCheckTime}.`}
+                                <Text fontWeight="bold">
+                                    Return to the game area — your location will be revealed to
+                                    everyone in {secondsUntilExposed}s.
                                 </Text>
-                                {showUnavailableRetry && (
-                                    <Button size="sm" onClick={requestPermission}>
-                                        Retry
-                                    </Button>
-                                )}
                             </Box>
-                    )}
-                    <PlayerMapModal
-                        isOpen={isMapOpen}
-                        onClose={handleMapClose}
-                        boundaryVertices={gameBoundary.vertices}
-                        otherPositions={[...freshOtherOutsidePositions, ...pingPositions]}
-                        ownPosition={
-                            ownPosition &&
-                            nowMs - ownPosition.acquiredAtMs <=
-                                GAME_BOUNDARY_CONFIG.freshnessMs
-                                ? ownPosition
-                                : null
-                        }
-                        statusText={mapStatusText}
-                    />
+                        )}
+                        {liveBoundaryStatus.status === 'outside' && (
+                            <Box
+                                bg="red.900"
+                                color="white"
+                                borderRadius="md"
+                                p={2}
+                                mb={2}
+                                textAlign="center"
+                            >
+                                <Text fontWeight="bold">{statusText}</Text>
+                            </Box>
+                        )}
+                        {liveBoundaryStatus.status !== 'outside' &&
+                            liveBoundaryStatus.status !== 'unavailable' &&
+                            !isApproachingExposure && (
+                                <Text bg="gray.800" borderRadius="xl" boxShadow="lg" p={3} mb={2}>
+                                    {statusText}
+                                </Text>
+                            )}
+                        {/* Suppressed while permissionState is still 'unknown' — the
+                        pre-permission box above already explains why there is
+                        nothing to show yet; stacking both is confusing. */}
+                        {permissionState !== 'unknown' &&
+                            liveBoundaryStatus.status === 'unavailable' && (
+                                <Box bg="orange.800" color="white" borderRadius="md" p={3} mb={2}>
+                                    <Text mb={showUnavailableRetry ? 2 : 0}>
+                                        Location unavailable: {unavailableText}
+                                        {lastCheckTime && ` Last confirmed at ${lastCheckTime}.`}
+                                    </Text>
+                                    {showUnavailableRetry && (
+                                        <Button size="sm" onClick={requestPermission}>
+                                            Retry
+                                        </Button>
+                                    )}
+                                </Box>
+                            )}
+                        <PlayerMapModal
+                            isOpen={isMapOpen}
+                            onClose={handleMapClose}
+                            boundaryVertices={gameBoundary.vertices}
+                            otherPositions={[...freshOtherOutsidePositions, ...pingPositions]}
+                            ownPosition={
+                                ownPosition &&
+                                nowMs - ownPosition.acquiredAtMs <= GAME_BOUNDARY_CONFIG.freshnessMs
+                                    ? ownPosition
+                                    : null
+                            }
+                            statusText={mapStatusText}
+                        />
                     </Box>
                 )}
                 <MessageFeed
