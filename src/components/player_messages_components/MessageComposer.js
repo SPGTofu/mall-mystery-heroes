@@ -38,6 +38,7 @@ const MessageComposer = ({
     // From this player's own doc — set when someone uses "Block a player's
     // camera" on them (purchasePowerUp.js).
     cameraBlockedUntil = null,
+    locationEnabled = true,
 }) => {
     const [text, setText] = useState('');
     const blockedUntilMs = toMs(cameraBlockedUntil);
@@ -190,7 +191,7 @@ const MessageComposer = ({
     // photo — the moderator's combined target/mission dropdown may still
     // have an open mission to offer them even with no live kill target
     // (docs/superpowers/specs/2026-08-27-mission-completion-via-photo-design.md).
-    const photoDisabled = disabled || !isGameActive || cameraBlocked;
+    const photoDisabled = disabled || !isGameActive || cameraBlocked || !locationEnabled;
 
     return (
         <Flex p={2} borderTop="1px solid" borderColor="gray.600">
@@ -226,7 +227,13 @@ const MessageComposer = ({
                     top="50%"
                     transform="translateY(-50%)"
                     variant="ghost"
-                    aria-label={cameraBlocked ? 'Send photo (camera blocked)' : 'Send photo'}
+                    aria-label={
+                        !locationEnabled
+                            ? 'Send photo (enable location first)'
+                            : cameraBlocked
+                              ? 'Send photo (camera blocked)'
+                              : 'Send photo'
+                    }
                     onClick={() => fileInputRef.current?.click()}
                     isDisabled={photoDisabled}
                     w="44px"

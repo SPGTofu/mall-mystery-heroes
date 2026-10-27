@@ -1,5 +1,10 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import {
+    Accordion,
+    AccordionButton,
+    AccordionIcon,
+    AccordionItem,
+    AccordionPanel,
     AlertDialog,
     AlertDialogBody,
     AlertDialogContent,
@@ -8,11 +13,13 @@ import {
     AlertDialogOverlay,
     Box,
     Button,
+    Fade,
     Divider,
     Flex,
     Heading,
     HStack,
     Image,
+    Avatar,
     Modal,
     ModalBody,
     ModalCloseButton,
@@ -24,9 +31,11 @@ import {
     useDisclosure,
 } from '@chakra-ui/react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { onSnapshot } from 'firebase/firestore';
+import { onSnapshot, updateDoc } from 'firebase/firestore';
 import { signOut } from 'firebase/auth';
 import { auth } from '../utils/firebase';
+import { uploadPlayerAvatar } from '../components/firebase_calls/storageCalls';
+import { compressImage } from '../utils/compressImage';
 import {
     fetchRoomReferenceForRoom,
     fetchPlayerReferenceForRoom,
@@ -115,10 +124,15 @@ const PlayerGame = () => {
     const [boundaryStatusDoc, setBoundaryStatusDoc] = useState(null);
     const [otherOutsidePositions, setOtherOutsidePositions] = useState([]);
     const [nowMs, setNowMs] = useState(Date.now());
+    const [selectedTarget, setSelectedTarget] = useState(null);
+    const [isTargetsAccordionOpen, setIsTargetsAccordionOpen] = useState(false);
+    const [avatarBusy, setAvatarBusy] = useState(false);
+    const avatarInputRef = useRef(null);
     const previousRevisionRef = useRef(undefined);
     const session = readPlayerSession();
     const playerName = session && session.roomID === roomID ? session.playerName : '';
     const { isOpen, onOpen, onClose } = useDisclosure();
+    const targetPhotoDisclosure = useDisclosure();
     const { isOpen: isMapOpen, onOpen: onMapOpen, onClose: onMapClose } = useDisclosure();
     const {
         isOpen: isMissionsOpen,
@@ -247,11 +261,10 @@ const PlayerGame = () => {
         if (!isGameActive) onGameEndedOpen();
     }, [isGameActive, onGameEndedOpen]);
 
-    // Only starts once the game has actually begun — no need to read the
-    // player's own doc while still in the waiting room, and it keeps the
-    // waiting screen's read footprint unchanged from before this doc.
+    // Read the player's own doc in the waiting room too, so they can set
+    // their avatar before the host starts the game.
     useEffect(() => {
-        if (!roomID || !gameStarted || !playerName) return undefined;
+        if (!roomID || !playerName) return undefined;
         const playerRef = fetchPlayerReferenceForRoom(playerName, roomID);
         const unsubscribe = onSnapshot(
             playerRef,
@@ -266,7 +279,7 @@ const PlayerGame = () => {
             handleSubscriptionError
         );
         return () => unsubscribe();
-    }, [roomID, gameStarted, playerName, navigate, handleSubscriptionError]);
+    }, [roomID, playerName, navigate, handleSubscriptionError]);
 
     useEffect(() => {
         if (!roomID || !gameStarted) return undefined;
@@ -275,6 +288,7 @@ const PlayerGame = () => {
             setPlayers(
                 snapshot.docs.map((doc) => ({
                     name: doc.data().name,
+                    avatarUrl: doc.data().avatarUrl || '',
                     score: doc.data().score,
                     targets: doc.data().targets,
                     openSeason: doc.data().openSeason,
@@ -508,6 +522,23 @@ const PlayerGame = () => {
         onOpen();
     };
 
+    const handleAvatarChange = async (event) => {
+        const file = event.target.files?.[0];
+        event.target.value = '';
+        if (!file || !auth.currentUser || !playerData) return;
+        setAvatarBusy(true);
+        try {
+            const blob = await compressImage(file);
+            const avatarUrl = await uploadPlayerAvatar(roomID, auth.currentUser.uid, blob);
+            await updateDoc(fetchPlayerReferenceForRoom(playerName, roomID), { avatarUrl });
+        } catch (error) {
+            console.error('Could not update avatar:', error);
+            createAlert('error', 'Could not save your photo', 'Please try again.', 3000);
+        } finally {
+            setAvatarBusy(false);
+        }
+    };
+
     const handleConfirmLeave = async () => {
         try {
             await leaveGame(roomID);
@@ -570,30 +601,93 @@ const PlayerGame = () => {
                 </HStack>
                 {isGameActive && gameStarted && playerData?.isAlive && (
                     <Box
-                        px={3}
-                        py={2}
+                        px={2}
+                        py={1.5}
                         bg="purple.900"
                         border="1px solid"
                         borderColor="purple.700"
                         borderRadius="xl"
                     >
-                        <Text
-                            fontSize="xs"
-                            color="purple.200"
-                            textTransform="uppercase"
-                            letterSpacing="wide"
-                            mb={1}
-                        >
-                            Current target
-                        </Text>
-                        <Text fontSize="lg" fontWeight="semibold" noOfLines={2}>
-                            {(playerData.targets ?? []).length > 0
-                                ? (playerData.targets ?? []).join(', ')
-                                : 'Waiting for your target...'}
-                        </Text>
+                        {(playerData.targets ?? []).length > 0 ? (
+                            <Accordion
+                                allowToggle
+                                index={isTargetsAccordionOpen ? 0 : -1}
+                                onChange={(index) => setIsTargetsAccordionOpen(index === 0)}
+                            >
+                                <AccordionItem border="none">
+                                    <AccordionButton px={1} py={0} _hover={{ bg: 'whiteAlpha.100' }}>
+                                        <Box display="flex" flexDirection="column" flex="1" textAlign="left">
+                                            <Text flex="1" textAlign="left" fontSize="sm" fontWeight="semibold">
+                                                Current target{playerData.targets.length === 1 ? '' : 's'}
+                                                {playerData.targets.length > 1 ? ` (${playerData.targets.length})` : ''}
+                                            </Text>
+                                            <Fade in={isTargetsAccordionOpen} unmountOnExit>
+                                                <Text fontSize="xs" color="whiteAlpha.600">
+                                                    Click on a target to view their photo
+                                                </Text>
+                                            </Fade>
+                                        </Box>
+                                        <AccordionIcon />
+                                    </AccordionButton>
+                                    <AccordionPanel px={1} pb={1} pt={2}>
+                                        <HStack spacing={1} flexWrap="wrap" rowGap={0}>
+                                            {(playerData.targets ?? []).map((targetName) => {
+                                                const target = players.find(
+                                                    (player) => normalizePlayerName(player.name) === normalizePlayerName(targetName)
+                                                );
+                                                return (
+                                                    <Button
+                                                        key={targetName}
+                                                        variant="ghost"
+                                                        color="white"
+                                                        leftIcon={<Avatar size="xs" name={targetName} src={target?.avatarUrl} />}
+                                                        size="sm"
+                                                        minH={7}
+                                                        px={2}
+                                                        py={0}
+                                                        fontSize="sm"
+                                                        onClick={() => {
+                                                            setSelectedTarget(target || { name: targetName });
+                                                            targetPhotoDisclosure.onOpen();
+                                                        }}
+                                                    >
+                                                        {targetName}
+                                                    </Button>
+                                                );
+                                            })}
+                                        </HStack>
+                                    </AccordionPanel>
+                                </AccordionItem>
+                            </Accordion>
+                        ) : (
+                            <Text fontSize="sm" fontWeight="semibold">Waiting for your target...</Text>
+                        )}
                     </Box>
                 )}
                 <HStack spacing={2} justifyContent="flex-start" width="100%" overflowX="auto">
+                    {playerData && (
+                        <>
+                            <Box display="flex" flexDirection="column" alignItems="center">
+                                <Avatar
+                                    size="sm"
+                                    name={playerName}
+                                    src={playerData.avatarUrl}
+                                    onClick={() => avatarInputRef.current?.click()}
+                                    isLoading={avatarBusy}
+                                />
+                                <input
+                                    ref={avatarInputRef}
+                                    type="file"
+                                    accept="image/*"
+                                    capture="user"
+                                    onChange={handleAvatarChange}
+                                    aria-label="Take a selfie"
+                                    style={{ display: 'none' }}
+                                />
+                            </Box>
+                            <Divider orientation="vertical" mx={2} borderColor="whiteAlpha.400" />
+                        </>
+                    )}
                     {/* Top-left per POWER_UPS_SPEC.md — only while there's a
                         game to spend points in, and only for the living. */}
                     {canShop && (
@@ -649,6 +743,20 @@ const PlayerGame = () => {
                     )}
                 </HStack>
             </Flex>
+            <Modal isOpen={targetPhotoDisclosure.isOpen} onClose={targetPhotoDisclosure.onClose} isCentered>
+                <ModalOverlay />
+                <ModalContent bg="gray.800" color="white">
+                    <ModalHeader>{selectedTarget?.name}</ModalHeader>
+                    <ModalCloseButton />
+                    <ModalBody pb={6} textAlign="center">
+                        {selectedTarget?.avatarUrl ? (
+                            <Image src={selectedTarget.avatarUrl} alt={`${selectedTarget.name}'s photo`} maxH="65vh" mx="auto" borderRadius="lg" />
+                        ) : (
+                            <Text>This player has not added a photo yet.</Text>
+                        )}
+                    </ModalBody>
+                </ModalContent>
+            </Modal>
             <AlertDialog isOpen={isOpen} leastDestructiveRef={cancelRef} onClose={onClose}>
                 <AlertDialogOverlay />
                 <AlertDialogContent bg="#202030">
@@ -883,6 +991,7 @@ const PlayerGame = () => {
                 players={players}
                 missions={missions}
                 cameraBlockedUntil={playerData?.cameraBlockedUntil}
+                locationEnabled={permissionState === 'granted'}
             />
         </Flex>
     );
