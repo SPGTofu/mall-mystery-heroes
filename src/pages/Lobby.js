@@ -188,6 +188,7 @@ const Lobby = () => {
                     borderColor="gray.600"
                     borderRadius="md"
                 >
+                    <Divider />
                     <GMChatPanel roomID={roomID} />
                     <Flex p={2} gap={2} borderTop="1px solid" borderColor="gray.600">
                         <Input

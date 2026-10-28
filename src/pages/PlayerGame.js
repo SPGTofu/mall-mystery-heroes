@@ -29,6 +29,8 @@ import {
     ModalHeader,
     ModalOverlay,
     Text,
+    UnorderedList,
+    ListItem,
     useDisclosure,
 } from '@chakra-ui/react';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -63,6 +65,7 @@ import ExitIcon from '../assets/exit.png';
 import MissionIcon from '../assets/mission-white.png';
 import ShopIcon from '../assets/shop-white.png';
 import LocationIcon from '../assets/location-white.png';
+import { BookOpen } from 'lucide-react';
 
 // require(), not a named `import` — gameBoundary.js is CommonJS
 // (module.exports) by design (see its own header comment), and a named ES
@@ -146,6 +149,11 @@ const PlayerGame = () => {
         onClose: onLeaderboardClose,
     } = useDisclosure();
     const { isOpen: isShopOpen, onOpen: onShopOpen, onClose: onShopClose } = useDisclosure();
+    const {
+        isOpen: areRulesOpen,
+        onOpen: onRulesOpen,
+        onClose: onRulesClose,
+    } = useDisclosure();
     const {
         isOpen: isGameEndedOpen,
         onOpen: onGameEndedOpen,
@@ -583,28 +591,39 @@ const PlayerGame = () => {
                 flexShrink={0}
             >
                 <HStack spacing={3} justifyContent="space-between" minW="0">
-                    <Box minW="0">
-                        <Text
-                            fontSize="xs"
-                            color="whiteAlpha.600"
-                            textTransform="uppercase"
-                            letterSpacing="0.14em"
-                        >
-                            Mall Mystery Heroes
-                        </Text>
-                        <Heading size="sm" noOfLines={1}>
-                            {playerName || 'You'}{' '}
-                            <Text as="span" color="whiteAlpha.600" fontWeight="normal">
-                                · Lobby {roomID}
+                    <Flex gap={4} align="center">
+                        <Box minW="0">
+                            <Text
+                                fontSize="xs"
+                                color="whiteAlpha.600"
+                                textTransform="uppercase"
+                                letterSpacing="0.14em"
+                            >
+                                Mall Mystery Heroes
                             </Text>
-                        </Heading>
-                    </Box>
+                            <Heading size="sm" noOfLines={1}>
+                                {playerName || 'You'}{' '}
+                                <Text as="span" color="whiteAlpha.600" fontWeight="normal">
+                                    · Lobby {roomID}
+                                </Text>
+                            </Heading>
+                        </Box>
+                        <IconButton
+                            aria-label="Game rules"
+                            title="Game rules"
+                            icon={<BookOpen size={28} />}
+                            onClick={onRulesOpen}
+                            variant="ghost"
+                            color="white"
+                        />
+                    </Flex>
                     <IconButton
                         aria-label="Leave"
                         title="Leave Game"
                         icon={<Image src={ExitIcon} alt="" width={8} height={8} />}
                         onClick={handleLeaveClick}
                         variant="ghost"
+                        m={0}
                     />
                 </HStack>
                 {isGameActive && gameStarted && playerData?.isAlive && (
@@ -824,6 +843,103 @@ const PlayerGame = () => {
                     </AlertDialogFooter>
                 </AlertDialogContent>
             </AlertDialog>
+            <Modal isOpen={areRulesOpen} onClose={onRulesClose} size="xl" isCentered>
+                <ModalOverlay />
+                <ModalContent bg="gray.800" color="white" maxH="85vh" overflow="hidden">
+                    <ModalHeader>How to Play</ModalHeader>
+                    <ModalCloseButton aria-label="Close game rules" />
+                    <ModalBody overflowY="auto" pb={6}>
+                        <Text mb={5} color="whiteAlpha.800">
+                            You have been contracted to elimiate your targets. Follow these rules, plus any instructions from your game host.
+                        </Text>
+
+                        <Heading size="sm" mb={2} color="teal.200">
+                            Targets
+                        </Heading>
+
+                        <UnorderedList spacing={2} mb={5} pl={2}>
+                            <ListItem>
+                                To make an elimination claim, take a photo of the person and submit it for the host to review. An elimination only counts when the host approves it.
+                            </ListItem>
+                            <ListItem>
+                                If you eliminate a target, you will take all of their points.
+                            </ListItem>
+                            <ListItem>
+                                Your targets may change throughout the game, so check your target list regularly.
+                            </ListItem>
+                        </UnorderedList>
+
+                        <Heading size="sm" mb={2} color="teal.200">
+                            Missions & Points
+                        </Heading>
+
+                        <UnorderedList spacing={2} mb={5} pl={2}>
+                            <ListItem>
+                                Complete missions to earn points or revive. To keep track of scores, check the leaderboard.
+                            </ListItem>
+                        </UnorderedList>
+
+                        <Heading size="sm" mb={2} color="teal.200">
+                            Avatars
+                        </Heading>
+
+                        <UnorderedList spacing={2} mb={5} pl={2}>
+                            <ListItem>
+                                Change your avatar to be a picture of yourself so other players know who you are.
+                            </ListItem>
+                        </UnorderedList>
+
+                        <Heading size="sm" mb={2} color="teal.200">
+                            Zones
+                        </Heading>
+
+                        <UnorderedList spacing={2} mb={5} pl={2}>
+                            <ListItem>
+                                The host can decide to enable zones in the game. Users must accept location permissions to submit photos.
+                            </ListItem>
+                            <ListItem>
+                                If these zones are enabled, use the map to locate individuals who are outside of the zone.
+                            </ListItem>
+                        </UnorderedList>
+
+                        <Heading size="sm" mb={2} color="teal.200">
+                            Shop
+                        </Heading>
+
+                        <UnorderedList spacing={2} mb={5} pl={2}>
+                            <ListItem>
+                                Use the shop to purchase items, upgrades, or customization options for your character.
+                            </ListItem>
+                        </UnorderedList>
+
+                        <Heading size="sm" mb={2} color="teal.200">
+                            Safety
+                        </Heading>
+
+                        <UnorderedList spacing={2} mb={5} pl={2}>
+                            <ListItem>
+                                Follow all venue rules. Stay in public areas; never enter restricted spaces or run indoors.
+                            </ListItem>
+                            <ListItem>
+                                Keep play friendly and safe. No real weapons, physical contact, or
+                                actions that could alarm or endanger anyone.
+                            </ListItem>
+                            <ListItem>
+                                If rules are broken, the host may issue warnings or penalties, including removal from the game.
+                            </ListItem>
+                        </UnorderedList>
+
+                        <Heading size="sm" mb={2} color="teal.200">
+                            If you are eliminated
+                        </Heading>
+                        <Text color="whiteAlpha.800">
+                            Stay in the game and watch for revival missions. The host controls
+                            eliminations, revivals, and when the game ends. Check the chat for
+                            updates and announcements.
+                        </Text>
+                    </ModalBody>
+                </ModalContent>
+            </Modal>
             <PlayerTaskListModal
                 isOpen={isMissionsOpen}
                 onClose={onMissionsClose}

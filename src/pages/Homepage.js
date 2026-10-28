@@ -1,5 +1,15 @@
 import React, { useEffect } from 'react';
-import { Button, Stack, Image, Flex, Heading } from '@chakra-ui/react';
+import {
+    Button,
+    Stack,
+    Image,
+    Flex,
+    Heading,
+    Text,
+    Box,
+    VisuallyHidden,
+    usePrefersReducedMotion,
+} from '@chakra-ui/react';
 import { useNavigate } from 'react-router-dom';
 import { onAuthStateChanged } from 'firebase/auth';
 import { collectionGroup, getDoc, getDocs, query, where } from 'firebase/firestore';
@@ -39,8 +49,32 @@ const preferredRecoveryCandidate = async (playerDocs) => {
     return playerDocs[0];
 };
 
+const HOMEPAGE_DESCRIPTION =
+    'Agent, we need you. Join a game to start your live-action adventure. Track down your targets, complete covert missions, and outlast the other heroes. Your journey starts now.';
+
 const Homepage = () => {
     const navigate = useNavigate();
+    const prefersReducedMotion = usePrefersReducedMotion();
+    const [typedDescription, setTypedDescription] = React.useState(
+        prefersReducedMotion ? HOMEPAGE_DESCRIPTION : ''
+    );
+
+    useEffect(() => {
+        if (prefersReducedMotion) {
+            setTypedDescription(HOMEPAGE_DESCRIPTION);
+            return undefined;
+        }
+
+        setTypedDescription('');
+        let characterIndex = 0;
+        const typingTimer = window.setInterval(() => {
+            characterIndex += 1;
+            setTypedDescription(HOMEPAGE_DESCRIPTION.slice(0, characterIndex));
+            if (characterIndex >= HOMEPAGE_DESCRIPTION.length) window.clearInterval(typingTimer);
+        }, 28);
+
+        return () => window.clearInterval(typingTimer);
+    }, [prefersReducedMotion]);
 
     // Only redirect when there's an actual signed-in Firebase user backing
     // the stored session, not just a localStorage entry — RequireAuth (which
@@ -125,6 +159,58 @@ const Homepage = () => {
                     Join Game
                 </Button>
             </Stack>
+            <Box
+                mt={6}
+                maxWidth="420px"
+                width="100%"
+                minHeight="180px"
+                border="1px solid"
+                borderColor="green.700"
+                borderRadius="md"
+                bg="blackAlpha.800"
+                p={4}
+                boxShadow="0 0 18px rgba(72, 187, 120, 0.12)"
+            >
+                <Text
+                    mb={2}
+                    color="green.300"
+                    fontFamily="mono"
+                    fontSize="xs"
+                    textTransform="uppercase"
+                    letterSpacing="0.12em"
+                >
+                    &gt; Incoming transmission · Agent
+                </Text>
+                <Text
+                    color="green.100"
+                    fontFamily="mono"
+                    fontSize="sm"
+                    lineHeight="tall"
+                    aria-hidden="true"
+                >
+                    {prefersReducedMotion ? HOMEPAGE_DESCRIPTION : typedDescription}
+                    {!prefersReducedMotion && (
+                        <Box
+                            as="span"
+                            display="inline-block"
+                            ml={1}
+                            width="2px"
+                            height="1em"
+                            bg="green.300"
+                            verticalAlign="text-bottom"
+                            animation="terminal-cursor 1s steps(2, start) infinite"
+                            sx={{
+                                '@keyframes terminal-cursor': {
+                                    to: { visibility: 'hidden' },
+                                },
+                            }}
+                        />
+                    )}
+                </Text>
+                <VisuallyHidden>
+                    {HOMEPAGE_DESCRIPTION}
+                </VisuallyHidden>
+            </Box>
         </Flex>
     );
 };

@@ -10,14 +10,14 @@ const RARITY_COLORS = {
 };
 
 const POWER_UPS = [
-    {
-        id: 'watch-ad',
-        name: 'Watch an ad',
-        cost: 0,
-        rarity: 'na',
-        cooldownSeconds: 300,
-        needsTarget: false,
-    },
+    // {
+    //     id: 'watch-ad',
+    //     name: 'Watch an ad',
+    //     cost: 0,
+    //     rarity: 'na',
+    //     cooldownSeconds: 300,
+    //     needsTarget: false,
+    // },
     {
         id: 'ping-assassins',
         name: 'Assassin Ping',
