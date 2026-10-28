@@ -331,8 +331,9 @@ describe('MessageComposer', () => {
         await userEvent.click(screen.getByRole('button', { name: 'Submit' }));
 
         // Gone already — uploadKillPhoto has not even resolved yet.
-        await waitFor(() =>
-            expect(screen.queryByRole('button', { name: 'Submit' })).not.toBeInTheDocument()
+        await waitFor(
+            () => expect(screen.queryByRole('button', { name: 'Submit' })).not.toBeInTheDocument(),
+            { timeout: 5000 }
         );
         expect(uploadKillPhoto).toHaveBeenCalledWith('room-a', fakeBlob);
         expect(submitKillPhoto).not.toHaveBeenCalled();

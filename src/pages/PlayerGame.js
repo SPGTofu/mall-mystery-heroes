@@ -111,11 +111,7 @@ const PlayerGame = () => {
         onClose: onLeaderboardClose,
     } = useDisclosure();
     const { isOpen: isShopOpen, onOpen: onShopOpen, onClose: onShopClose } = useDisclosure();
-    const {
-        isOpen: areRulesOpen,
-        onOpen: onRulesOpen,
-        onClose: onRulesClose,
-    } = useDisclosure();
+    const { isOpen: areRulesOpen, onOpen: onRulesOpen, onClose: onRulesClose } = useDisclosure();
     const {
         isOpen: isGameEndedOpen,
         onOpen: onGameEndedOpen,

@@ -29,10 +29,12 @@ const PlayerRulesModal = ({ isOpen, onClose }) => (
                 </Heading>
                 <UnorderedList spacing={2} mb={5} pl={2}>
                     <ListItem>
-                        To make a kill attempt, take a photo of the person and submit it for the host
-                        to review. An elimination only counts when the host approves it.
+                        To make a kill attempt, take a photo of the person and submit it for the
+                        host to review. An elimination only counts when the host approves it.
                     </ListItem>
-                    <ListItem>If you eliminate a target, you will take all of their points.</ListItem>
+                    <ListItem>
+                        If you eliminate a target, you will take all of their points.
+                    </ListItem>
                     <ListItem>
                         Your targets may change throughout the game, so check your target list
                         regularly. You can press their avatar to see a closer view of them.
@@ -44,8 +46,8 @@ const PlayerRulesModal = ({ isOpen, onClose }) => (
                 </Heading>
                 <UnorderedList spacing={2} mb={5} pl={2}>
                     <ListItem>
-                        Complete missions to earn points or revive. To keep track of scores, check the
-                        leaderboard.
+                        Complete missions to earn points or revive. To keep track of scores, check
+                        the leaderboard.
                     </ListItem>
                 </UnorderedList>
 
@@ -68,8 +70,8 @@ const PlayerRulesModal = ({ isOpen, onClose }) => (
                         permissions to submit photos.
                     </ListItem>
                     <ListItem>
-                        If these zones are enabled, use the map to locate individuals who are outside
-                        of the zone.
+                        If these zones are enabled, use the map to locate individuals who are
+                        outside of the zone.
                     </ListItem>
                 </UnorderedList>
 
@@ -77,7 +79,9 @@ const PlayerRulesModal = ({ isOpen, onClose }) => (
                     Shop
                 </Heading>
                 <UnorderedList spacing={2} mb={5} pl={2}>
-                    <ListItem>Use the shop to purchase items that can help you in the game.</ListItem>
+                    <ListItem>
+                        Use the shop to purchase items that can help you in the game.
+                    </ListItem>
                 </UnorderedList>
 
                 <Heading size="sm" mb={2} color="teal.200">
@@ -85,8 +89,8 @@ const PlayerRulesModal = ({ isOpen, onClose }) => (
                 </Heading>
                 <UnorderedList spacing={2} mb={5} pl={2}>
                     <ListItem>
-                        Follow all venue rules. Stay in public areas; never enter restricted spaces or
-                        run indoors.
+                        Follow all venue rules. Stay in public areas; never enter restricted spaces
+                        or run indoors.
                     </ListItem>
                     <ListItem>
                         Keep play friendly and safe. No real weapons, physical contact, or actions

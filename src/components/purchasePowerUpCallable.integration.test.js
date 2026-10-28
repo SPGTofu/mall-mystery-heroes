@@ -30,7 +30,11 @@ import {
 } from '../../test/emulatorHelpers';
 
 const ROOM = 'test-room';
-const STARTED = { gameStarted: true, isGameActive: true };
+const STARTED = {
+    gameStarted: true,
+    isGameActive: true,
+    gameBoundary: { enabled: true },
+};
 
 let bypass;
 beforeAll(() => {
@@ -80,6 +84,30 @@ const asAlice = async ({ alice = {}, others = [], room = STARTED }, body) => {
 };
 
 describe('purchasePowerUp', () => {
+    it('rejects location items when the host has not enabled zones', async () => {
+        await asAlice(
+            {
+                alice: { score: 50 },
+                others: [{ name: 'bob' }],
+                room: { gameStarted: true, isGameActive: true },
+            },
+            async (buy) => {
+                for (const itemId of [
+                    'ping-assassins',
+                    'ping-targets',
+                    'global-ping-picked',
+                    'global-ping-random',
+                ]) {
+                    await expect(buy({ roomId: ROOM, itemId, targetName: 'bob' })).rejects.toThrow(
+                        'Zones are not enabled'
+                    );
+                }
+                expect((await player('alice')).score).toBe(50);
+                expect(await pings()).toEqual([]);
+            }
+        );
+    });
+
     it('deducts the price and stores a cooldown on the buyer', async () => {
         await asAlice({ alice: { score: 25 } }, async (buy) => {
             const before = Date.now();
@@ -153,6 +181,7 @@ describe('purchasePowerUp', () => {
             await expect(buy({ roomId: ROOM, itemId: 'free-points' })).rejects.toThrow(
                 'Unknown item'
             );
+            await expect(buy({ roomId: ROOM, itemId: 'watch-ad' })).rejects.toThrow('Unknown item');
         });
     });
 
@@ -178,7 +207,7 @@ describe('purchasePowerUp', () => {
 
     it('rejects an eliminated player and changes nothing', async () => {
         await asAlice({ alice: { score: 50, isAlive: false } }, async (buy) => {
-            await expect(buy({ roomId: ROOM, itemId: 'watch-ad' })).rejects.toThrow(
+            await expect(buy({ roomId: ROOM, itemId: 'horcrux' })).rejects.toThrow(
                 "Eliminated players can't shop"
             );
             expect((await fetchPlayerForRoom('alice', ROOM)).data().score).toBe(50);
@@ -272,13 +301,6 @@ describe('purchasePowerUp', () => {
                 'Nobody to ping'
             );
             expect((await player('alice')).score).toBe(25);
-        });
-    });
-
-    it('gives 3 points for watching an ad', async () => {
-        await asAlice({ alice: { score: 0 } }, async (buy) => {
-            await buy({ roomId: ROOM, itemId: 'watch-ad' });
-            expect((await player('alice')).score).toBe(3);
         });
     });
 

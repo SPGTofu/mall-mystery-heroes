@@ -52,8 +52,8 @@ const PlayerBoundaryPanel = ({
             {permissionState === 'denied' && (
                 <Box bg="orange.800" color="white" borderRadius="md" p={3} mb={2}>
                     <Text mb={2}>
-                        Location permission was denied. Enable it in your browser or device settings,
-                        then retry.
+                        Location permission was denied. Enable it in your browser or device
+                        settings, then retry.
                     </Text>
                     <Button size="sm" onClick={requestPermission}>
                         Retry
@@ -66,7 +66,14 @@ const PlayerBoundaryPanel = ({
                 </Box>
             )}
             {isApproachingExposure && (
-                <Box bg="orange.700" color="white" borderRadius="md" p={2} mb={2} textAlign="center">
+                <Box
+                    bg="orange.700"
+                    color="white"
+                    borderRadius="md"
+                    p={2}
+                    mb={2}
+                    textAlign="center"
+                >
                     <Text fontWeight="bold">
                         Return to the game area — your location will be revealed to everyone in{' '}
                         {secondsUntilExposed}s.

@@ -64,7 +64,14 @@ const JoinGame = () => {
             backgroundSize="cover"
             backgroundPosition="center"
         >
-            <Stack as="form" onSubmit={handleSubmit} align="center" spacing={4} width="100%" maxWidth="320px">
+            <Stack
+                as="form"
+                onSubmit={handleSubmit}
+                align="center"
+                spacing={4}
+                width="100%"
+                maxWidth="320px"
+            >
                 <Image src={logo} maxWidth="250px" maxHeight="250px" alt="logo white" mb={4} />
                 <Heading size="lg" textAlign="center">
                     Join Game

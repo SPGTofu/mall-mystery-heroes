@@ -120,14 +120,23 @@ const PlayerGameHeader = ({
                                 onChange={(index) => setIsTargetsAccordionOpen(index === 0)}
                             >
                                 <AccordionItem border="none">
-                                    <AccordionButton px={1} py={0} _hover={{ bg: 'whiteAlpha.100' }}>
+                                    <AccordionButton
+                                        px={1}
+                                        py={0}
+                                        _hover={{ bg: 'whiteAlpha.100' }}
+                                    >
                                         <Box
                                             display="flex"
                                             flexDirection="column"
                                             flex="1"
                                             textAlign="left"
                                         >
-                                            <Text flex="1" textAlign="left" fontSize="sm" fontWeight="semibold">
+                                            <Text
+                                                flex="1"
+                                                textAlign="left"
+                                                fontSize="sm"
+                                                fontWeight="semibold"
+                                            >
                                                 Current target
                                                 {playerData.targets.length === 1 ? '' : 's'}
                                                 {playerData.targets.length > 1
@@ -168,7 +177,9 @@ const PlayerGameHeader = ({
                                                         py={0}
                                                         fontSize="sm"
                                                         onClick={() => {
-                                                            setSelectedTarget(target || { name: targetName });
+                                                            setSelectedTarget(
+                                                                target || { name: targetName }
+                                                            );
                                                             setIsTargetPhotoOpen(true);
                                                         }}
                                                     >
@@ -192,10 +203,18 @@ const PlayerGameHeader = ({
                         <>
                             <Box display="flex" flexDirection="column" alignItems="center">
                                 <IconButton
-                                    aria-label={playerData.avatarUrl ? 'Change my photo' : 'Add my photo'}
-                                    title={playerData.avatarUrl ? 'Change my photo' : 'Add my photo'}
+                                    aria-label={
+                                        playerData.avatarUrl ? 'Change my photo' : 'Add my photo'
+                                    }
+                                    title={
+                                        playerData.avatarUrl ? 'Change my photo' : 'Add my photo'
+                                    }
                                     icon={
-                                        <Avatar size="sm" name={playerName} src={playerData.avatarUrl} />
+                                        <Avatar
+                                            size="sm"
+                                            name={playerName}
+                                            src={playerData.avatarUrl}
+                                        />
                                     }
                                     onClick={() => avatarInputRef.current?.click()}
                                     isLoading={avatarBusy}
@@ -242,7 +261,12 @@ const PlayerGameHeader = ({
                     />
                     {gameBoundaryEnabled && (
                         <>
-                            <Divider orientation="vertical" mx={3} mr={4} borderColor="whiteAlpha.400" />
+                            <Divider
+                                orientation="vertical"
+                                mx={3}
+                                mr={4}
+                                borderColor="whiteAlpha.400"
+                            />
                             <IconButton
                                 aria-label="View Game Map"
                                 icon={<Image src={LocationIcon} alt="" width={5} height={8} />}

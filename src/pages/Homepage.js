@@ -1,15 +1,5 @@
-import React, { useEffect } from 'react';
-import {
-    Button,
-    Stack,
-    Image,
-    Flex,
-    Heading,
-    Text,
-    Box,
-    VisuallyHidden,
-    usePrefersReducedMotion,
-} from '@chakra-ui/react';
+import React, { useEffect, useState } from 'react';
+import { Button, Stack, Image, Flex, Heading, Text, Box, VisuallyHidden } from '@chakra-ui/react';
 import { useNavigate } from 'react-router-dom';
 import { onAuthStateChanged } from 'firebase/auth';
 import { collectionGroup, getDoc, getDocs, query, where } from 'firebase/firestore';
@@ -53,10 +43,32 @@ const preferredRecoveryCandidate = async (playerDocs) => {
 const HOMEPAGE_DESCRIPTION =
     'Agent, we need you. Join a game to start your live-action adventure. Track down your targets, complete covert missions, and outlast the other heroes. Your journey starts now.';
 
+const useReducedMotionPreference = () => {
+    const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
+
+    useEffect(() => {
+        if (typeof window.matchMedia !== 'function') return undefined;
+
+        const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+        const updatePreference = (event) => setPrefersReducedMotion(event.matches);
+        setPrefersReducedMotion(mediaQuery.matches);
+
+        if (typeof mediaQuery.addEventListener === 'function') {
+            mediaQuery.addEventListener('change', updatePreference);
+            return () => mediaQuery.removeEventListener('change', updatePreference);
+        }
+
+        mediaQuery.addListener(updatePreference);
+        return () => mediaQuery.removeListener(updatePreference);
+    }, []);
+
+    return prefersReducedMotion;
+};
+
 const Homepage = () => {
     const navigate = useNavigate();
-    const prefersReducedMotion = usePrefersReducedMotion();
-    const [typedDescription, setTypedDescription] = React.useState(
+    const prefersReducedMotion = useReducedMotionPreference();
+    const [typedDescription, setTypedDescription] = useState(
         prefersReducedMotion ? HOMEPAGE_DESCRIPTION : ''
     );
 
@@ -137,7 +149,16 @@ const Homepage = () => {
     }, [navigate]);
 
     return (
-        <Flex height="100vh" alignItems="center" justifyContent="center" direction="column" p={4} backgroundImage={`url(${bgimg})`} backgroundSize="cover" backgroundPosition="center">
+        <Flex
+            height="100vh"
+            alignItems="center"
+            justifyContent="center"
+            direction="column"
+            p={4}
+            backgroundImage={`url(${bgimg})`}
+            backgroundSize="cover"
+            backgroundPosition="center"
+        >
             <Image src={logo} maxWidth="250px" maxHeight="250px" alt="logo white" mb={4} />
             <Heading mb={8} color="brand.100" textAlign="center">
                 Mall Mystery Heroes
@@ -208,9 +229,7 @@ const Homepage = () => {
                         />
                     )}
                 </Text>
-                <VisuallyHidden>
-                    {HOMEPAGE_DESCRIPTION}
-                </VisuallyHidden>
+                <VisuallyHidden>{HOMEPAGE_DESCRIPTION}</VisuallyHidden>
             </Box>
         </Flex>
     );

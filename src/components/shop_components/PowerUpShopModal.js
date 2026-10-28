@@ -213,8 +213,7 @@ const PowerUpShopModal = ({
                         needsTarget={reveal?.needsTarget}
                         unavailableMessage={
                             POWER_UPS.find((item) => item.id === reveal?.itemId)
-                                ?.requiresGameBoundary === true &&
-                            !zonesEnabled
+                                ?.requiresGameBoundary === true && !zonesEnabled
                                 ? 'This location reward is unavailable while zones are off.'
                                 : ''
                         }

@@ -37,8 +37,8 @@ const PlayerGameDialogs = ({
                 <AlertDialogContent bg="#202030">
                     <AlertDialogHeader color="red">WARNING</AlertDialogHeader>
                     <AlertDialogBody color="#FFFFFF">
-                        Leave the game? You&apos;ll be removed, and won&apos;t be able to rejoin once
-                        the game has started.
+                        Leave the game? You&apos;ll be removed, and won&apos;t be able to rejoin
+                        once the game has started.
                     </AlertDialogBody>
                     <AlertDialogFooter>
                         <Button ref={cancelRef} onClick={onLeaveClose} colorScheme="red">
