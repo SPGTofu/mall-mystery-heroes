@@ -563,6 +563,8 @@ const PlayerGame = () => {
         <Flex
             minH="100vh"
             height="100dvh"
+            pt="env(safe-area-inset-top)"
+            pb="env(safe-area-inset-bottom)"
             direction="column"
             bg={!isGameActive ? 'red.950' : 'gray.950'}
             color="white"
