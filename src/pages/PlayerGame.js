@@ -968,6 +968,7 @@ const PlayerGame = () => {
                         nowMs
                     )
                 }
+                zonesEnabled={gameBoundary?.enabled === true}
                 pendingMysteryItem={playerData?.pendingMysteryItem ?? null}
                 players={players}
                 playerName={playerName}

@@ -22,6 +22,7 @@ const POWER_UPS = [
         id: 'ping-assassins',
         name: 'Assassin Ping',
         description: 'See where your assassins are on the map.',
+        requiresGameBoundary: true,
         cost: 4,
         rarity: 'common',
         cooldownSeconds: 90,
@@ -31,6 +32,7 @@ const POWER_UPS = [
         id: 'ping-targets',
         name: 'Target Ping',
         description: 'See where your targets are on the map.',
+        requiresGameBoundary: true,
         cost: 5,
         rarity: 'common',
         cooldownSeconds: 90,
@@ -40,6 +42,7 @@ const POWER_UPS = [
         id: 'global-ping-picked',
         name: 'Global Player Ping',
         description: 'Show everyone where a picked player is on the map.',
+        requiresGameBoundary: true,
         cost: 6,
         rarity: 'rare',
         cooldownSeconds: 150,
@@ -49,6 +52,7 @@ const POWER_UPS = [
         id: 'global-ping-random',
         name: 'Global Random Ping',
         description: 'Show everyone where a random player is on the map.',
+        requiresGameBoundary: true,
         cost: 3,
         rarity: 'common',
         cooldownSeconds: 180,
@@ -92,6 +96,7 @@ const purchaseBlockReason = ({
     targetName,
     isAlive,
     horcruxActive,
+    boundaryEnabled = true,
 }) => {
     // `=== false`, not `!isAlive`: callers that don't know yet (undefined)
     // aren't treated as dead.
@@ -99,6 +104,9 @@ const purchaseBlockReason = ({
     if (cooldownEndsAtMs != null && nowMs < cooldownEndsAtMs) return 'On cooldown';
     // Non-stackable (POWER_UPS_SPEC.md): one active Horcrux at a time.
     if (item.id === 'horcrux' && horcruxActive === true) return 'Horcrux already active';
+    if (item.requiresGameBoundary === true && boundaryEnabled === false) {
+        return 'Zones are not enabled';
+    }
     if (Number(score) < item.cost) return 'Not enough points';
     if (item.needsTarget === true && !targetName) return 'Pick a player';
     return null;
