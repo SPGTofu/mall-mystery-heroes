@@ -846,7 +846,7 @@ const PlayerGame = () => {
             <Modal isOpen={areRulesOpen} onClose={onRulesClose} size="xl" isCentered>
                 <ModalOverlay />
                 <ModalContent bg="gray.800" color="white" maxH="85vh" overflow="hidden">
-                    <ModalHeader>How to Play</ModalHeader>
+                    <ModalHeader>Game Rules</ModalHeader>
                     <ModalCloseButton aria-label="Close game rules" />
                     <ModalBody overflowY="auto" pb={6}>
                         <Text mb={5} color="whiteAlpha.800">
@@ -859,13 +859,13 @@ const PlayerGame = () => {
 
                         <UnorderedList spacing={2} mb={5} pl={2}>
                             <ListItem>
-                                To make an elimination claim, take a photo of the person and submit it for the host to review. An elimination only counts when the host approves it.
+                                To make a kill attempt, take a photo of the person and submit it for the host to review. An elimination only counts when the host approves it.
                             </ListItem>
                             <ListItem>
                                 If you eliminate a target, you will take all of their points.
                             </ListItem>
                             <ListItem>
-                                Your targets may change throughout the game, so check your target list regularly.
+                                Your targets may change throughout the game, so check your target list regularly. You can press their avatar to see a closer view of them.
                             </ListItem>
                         </UnorderedList>
 
@@ -908,7 +908,7 @@ const PlayerGame = () => {
 
                         <UnorderedList spacing={2} mb={5} pl={2}>
                             <ListItem>
-                                Use the shop to purchase items, upgrades, or customization options for your character.
+                                Use the shop to purchase items that can help you in the game.
                             </ListItem>
                         </UnorderedList>
 
