@@ -16,6 +16,7 @@ import { collectionGroup, getDoc, getDocs, query, where } from 'firebase/firesto
 import logo from '../assets/mall-logo-white-2.png';
 import { readPlayerSession, writePlayerSession } from '../utils/playerSession';
 import { auth, db } from '../utils/firebase';
+import bgimg from '../assets/logo-3.png';
 
 /**
  * Picks which of several player docs a returning uid should be recovered
@@ -136,7 +137,7 @@ const Homepage = () => {
     }, [navigate]);
 
     return (
-        <Flex height="100vh" alignItems="center" justifyContent="center" direction="column" p={4}>
+        <Flex height="100vh" alignItems="center" justifyContent="center" direction="column" p={4} backgroundImage={`url(${bgimg})`} backgroundSize="cover" backgroundPosition="center">
             <Image src={logo} maxWidth="250px" maxHeight="250px" alt="logo white" mb={4} />
             <Heading mb={8} color="brand.100" textAlign="center">
                 Mall Mystery Heroes
@@ -167,9 +168,9 @@ const Homepage = () => {
                 border="1px solid"
                 borderColor="green.700"
                 borderRadius="md"
-                bg="blackAlpha.800"
+                bg="black"
                 p={4}
-                boxShadow="0 0 18px rgba(72, 187, 120, 0.12)"
+                boxShadow="0 4px 18px rgba(72, 187, 120, 0.12)"
             >
                 <Text
                     mb={2}

@@ -1,38 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import {
-    Accordion,
-    AccordionButton,
-    AccordionIcon,
-    AccordionItem,
-    AccordionPanel,
-    AlertDialog,
-    AlertDialogBody,
-    AlertDialogContent,
-    AlertDialogFooter,
-    AlertDialogHeader,
-    AlertDialogOverlay,
-    Box,
-    Button,
-    Fade,
-    Divider,
-    Flex,
-    Heading,
-    HStack,
-    IconButton,
-    Image,
-    Avatar,
-    Modal,
-    ModalBody,
-    ModalCloseButton,
-    ModalContent,
-    ModalFooter,
-    ModalHeader,
-    ModalOverlay,
-    Text,
-    UnorderedList,
-    ListItem,
-    useDisclosure,
-} from '@chakra-ui/react';
+import { Flex, useDisclosure } from '@chakra-ui/react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { onSnapshot, updateDoc } from 'firebase/firestore';
 import { signOut } from 'firebase/auth';
@@ -55,17 +22,15 @@ import MessageComposer from '../components/player_messages_components/MessageCom
 import PlayerTaskListModal from '../components/task_components/PlayerTaskListModal';
 import LeaderboardModal from '../components/game_end_components/LeaderboardModal';
 import PowerUpShopModal from '../components/shop_components/PowerUpShopModal';
+import PlayerGameHeader from '../components/player_game/PlayerGameHeader';
+import PlayerRulesModal from '../components/player_game/PlayerRulesModal';
+import PlayerGameDialogs from '../components/player_game/PlayerGameDialogs';
+import PlayerGameStatusNotices from '../components/player_game/PlayerGameStatusNotices';
+import PlayerBoundaryPanel from '../components/player_game/PlayerBoundaryPanel';
 import { buildLeaderboardStandings } from '../game/leaderboard';
 import { formatMessageTime } from '../utils/formatMessageTime';
 import { normalizePlayerName, resolvePlayerDisplayName } from '../game/playerNames';
 import useBoundaryLocation from '../hooks/useBoundaryLocation';
-import PlayerMapModal from '../components/map_components/PlayerMapModal';
-import LeaderboardIcon from '../assets/leaderboard-white.png';
-import ExitIcon from '../assets/exit.png';
-import MissionIcon from '../assets/mission-white.png';
-import ShopIcon from '../assets/shop-white.png';
-import LocationIcon from '../assets/location-white.png';
-import { BookOpen } from 'lucide-react';
 
 // require(), not a named `import` — gameBoundary.js is CommonJS
 // (module.exports) by design (see its own header comment), and a named ES
@@ -128,15 +93,12 @@ const PlayerGame = () => {
     const [boundaryStatusDoc, setBoundaryStatusDoc] = useState(null);
     const [otherOutsidePositions, setOtherOutsidePositions] = useState([]);
     const [nowMs, setNowMs] = useState(Date.now());
-    const [selectedTarget, setSelectedTarget] = useState(null);
-    const [isTargetsAccordionOpen, setIsTargetsAccordionOpen] = useState(false);
     const [avatarBusy, setAvatarBusy] = useState(false);
     const avatarInputRef = useRef(null);
     const previousRevisionRef = useRef(undefined);
     const session = readPlayerSession();
     const playerName = session && session.roomID === roomID ? session.playerName : '';
     const { isOpen, onOpen, onClose } = useDisclosure();
-    const targetPhotoDisclosure = useDisclosure();
     const { isOpen: isMapOpen, onOpen: onMapOpen, onClose: onMapClose } = useDisclosure();
     const {
         isOpen: isMissionsOpen,
@@ -159,7 +121,6 @@ const PlayerGame = () => {
         onOpen: onGameEndedOpen,
         onClose: onGameEndedClose,
     } = useDisclosure();
-    const cancelRef = useRef();
     const createAlert = CreateAlert();
     // Positions from a ping card's "View on map", shown alongside the
     // live ones until the map closes. Snapshots — never updated.
@@ -578,368 +539,33 @@ const PlayerGame = () => {
             color="white"
             overflow="hidden"
         >
-            <Flex
-                as="header"
-                direction="column"
-                gap={3}
-                px={{ base: 4, md: 6 }}
-                pt={{ base: 3, md: 4 }}
-                pb={4}
-                bg="gray.900"
-                borderBottom="1px solid"
-                borderColor="whiteAlpha.200"
-                flexShrink={0}
-            >
-                <HStack spacing={3} justifyContent="space-between" minW="0">
-                    <Flex gap={4} align="center">
-                        <Box minW="0">
-                            <Text
-                                fontSize="xs"
-                                color="whiteAlpha.600"
-                                textTransform="uppercase"
-                                letterSpacing="0.14em"
-                            >
-                                Mall Mystery Heroes
-                            </Text>
-                            <Heading size="sm" noOfLines={1}>
-                                {playerName || 'You'}{' '}
-                                <Text as="span" color="whiteAlpha.600" fontWeight="normal">
-                                    · Lobby {roomID}
-                                </Text>
-                            </Heading>
-                        </Box>
-                        <IconButton
-                            aria-label="Game rules"
-                            title="Game rules"
-                            icon={<BookOpen size={28} />}
-                            onClick={onRulesOpen}
-                            variant="ghost"
-                            color="white"
-                        />
-                    </Flex>
-                    <IconButton
-                        aria-label="Leave"
-                        title="Leave Game"
-                        icon={<Image src={ExitIcon} alt="" width={8} height={8} />}
-                        onClick={handleLeaveClick}
-                        variant="ghost"
-                        m={0}
-                    />
-                </HStack>
-                {isGameActive && gameStarted && playerData?.isAlive && (
-                    <Box
-                        px={2}
-                        py={1.5}
-                        bg="purple.900"
-                        border="1px solid"
-                        borderColor="purple.700"
-                        borderRadius="xl"
-                    >
-                        {(playerData.targets ?? []).length > 0 ? (
-                            <Accordion
-                                allowToggle
-                                index={isTargetsAccordionOpen ? 0 : -1}
-                                onChange={(index) => setIsTargetsAccordionOpen(index === 0)}
-                            >
-                                <AccordionItem border="none">
-                                    <AccordionButton
-                                        px={1}
-                                        py={0}
-                                        _hover={{ bg: 'whiteAlpha.100' }}
-                                    >
-                                        <Box
-                                            display="flex"
-                                            flexDirection="column"
-                                            flex="1"
-                                            textAlign="left"
-                                        >
-                                            <Text
-                                                flex="1"
-                                                textAlign="left"
-                                                fontSize="sm"
-                                                fontWeight="semibold"
-                                            >
-                                                Current target
-                                                {playerData.targets.length === 1 ? '' : 's'}
-                                                {playerData.targets.length > 1
-                                                    ? ` (${playerData.targets.length})`
-                                                    : ''}
-                                            </Text>
-                                            <Fade in={isTargetsAccordionOpen} unmountOnExit>
-                                                <Text fontSize="xs" color="whiteAlpha.600">
-                                                    Click on a target to view their photo
-                                                </Text>
-                                            </Fade>
-                                        </Box>
-                                        <AccordionIcon />
-                                    </AccordionButton>
-                                    <AccordionPanel px={1} pb={1} pt={2}>
-                                        <HStack spacing={1} flexWrap="wrap" rowGap={0}>
-                                            {(playerData.targets ?? []).map((targetName) => {
-                                                const target = players.find(
-                                                    (player) =>
-                                                        normalizePlayerName(player.name) ===
-                                                        normalizePlayerName(targetName)
-                                                );
-                                                return (
-                                                    <Button
-                                                        key={targetName}
-                                                        variant="ghost"
-                                                        color="white"
-                                                        leftIcon={
-                                                            <Avatar
-                                                                size="xs"
-                                                                name={targetName}
-                                                                src={target?.avatarUrl}
-                                                            />
-                                                        }
-                                                        size="sm"
-                                                        minH={7}
-                                                        px={2}
-                                                        py={0}
-                                                        fontSize="sm"
-                                                        onClick={() => {
-                                                            setSelectedTarget(
-                                                                target || { name: targetName }
-                                                            );
-                                                            targetPhotoDisclosure.onOpen();
-                                                        }}
-                                                    >
-                                                        {targetName}
-                                                    </Button>
-                                                );
-                                            })}
-                                        </HStack>
-                                    </AccordionPanel>
-                                </AccordionItem>
-                            </Accordion>
-                        ) : (
-                            <Text fontSize="sm" fontWeight="semibold">
-                                Waiting for your target...
-                            </Text>
-                        )}
-                    </Box>
-                )}
-                <HStack spacing={2} justifyContent="flex-start" width="100%" overflowX="auto">
-                    {playerData && (
-                        <>
-                            <Box display="flex" flexDirection="column" alignItems="center">
-                                <IconButton
-                                    aria-label={
-                                        playerData.avatarUrl ? 'Change my photo' : 'Add my photo'
-                                    }
-                                    title={
-                                        playerData.avatarUrl ? 'Change my photo' : 'Add my photo'
-                                    }
-                                    icon={
-                                        <Avatar
-                                            size="sm"
-                                            name={playerName}
-                                            src={playerData.avatarUrl}
-                                        />
-                                    }
-                                    onClick={() => avatarInputRef.current?.click()}
-                                    isLoading={avatarBusy}
-                                    variant="ghost"
-                                    minW={10}
-                                    p={0}
-                                />
-                                <input
-                                    ref={avatarInputRef}
-                                    type="file"
-                                    accept="image/*"
-                                    capture="user"
-                                    onChange={handleAvatarChange}
-                                    aria-label="Take a selfie"
-                                    style={{ display: 'none' }}
-                                />
-                            </Box>
-                            <Divider orientation="vertical" mx={2} borderColor="whiteAlpha.400" />
-                        </>
-                    )}
-                    {/* Top-left per POWER_UPS_SPEC.md — only while there's a
-                        game to spend points in, and only for the living. */}
-                    {canShop && (
-                        <>
-                            <IconButton
-                                aria-label="Shop"
-                                icon={<Image src={ShopIcon} alt="" width={8} height={8} />}
-                                onClick={onShopOpen}
-                                variant="ghost"
-                            />
-                            <Divider orientation="vertical" mx={3} borderColor="whiteAlpha.400" />
-                        </>
-                    )}
-                    <IconButton
-                        aria-label="Missions"
-                        icon={<Image src={MissionIcon} alt="" width={10} height={10} />}
-                        onClick={onMissionsOpen}
-                        variant="ghost"
-                    />
-                    <Divider orientation="vertical" mx={3} borderColor="whiteAlpha.400" />
-                    <IconButton
-                        aria-label="Leaderboard"
-                        icon={<Image src={LeaderboardIcon} alt="" width={10} height={10} />}
-                        onClick={onLeaderboardOpen}
-                        variant="ghost"
-                    />
-                    {gameBoundary?.enabled && (
-                        <>
-                            <Divider
-                                orientation="vertical"
-                                mx={3}
-                                mr={4}
-                                borderColor="whiteAlpha.400"
-                            />
-                            <IconButton
-                                aria-label="View Game Map"
-                                icon={<Image src={LocationIcon} alt="" width={5} height={8} />}
-                                onClick={onMapOpen}
-                                variant="ghost"
-                            />
-                        </>
-                    )}
-                </HStack>
-            </Flex>
-            <Modal
-                isOpen={targetPhotoDisclosure.isOpen}
-                onClose={targetPhotoDisclosure.onClose}
-                isCentered
-            >
-                <ModalOverlay />
-                <ModalContent bg="gray.800" color="white">
-                    <ModalHeader>{selectedTarget?.name}</ModalHeader>
-                    <ModalCloseButton />
-                    <ModalBody pb={6} textAlign="center">
-                        {selectedTarget?.avatarUrl ? (
-                            <Image
-                                src={selectedTarget.avatarUrl}
-                                alt={`${selectedTarget.name}'s photo`}
-                                maxH="65vh"
-                                mx="auto"
-                                borderRadius="lg"
-                            />
-                        ) : (
-                            <Text>This player has not added a photo yet.</Text>
-                        )}
-                    </ModalBody>
-                </ModalContent>
-            </Modal>
-            <AlertDialog isOpen={isOpen} leastDestructiveRef={cancelRef} onClose={onClose}>
-                <AlertDialogOverlay />
-                <AlertDialogContent bg="#202030">
-                    <AlertDialogHeader color="red">WARNING</AlertDialogHeader>
-                    <AlertDialogBody color="#FFFFFF">
-                        Leave the game? You&apos;ll be removed, and won&apos;t be able to rejoin
-                        once the game has started.
-                    </AlertDialogBody>
-                    <AlertDialogFooter>
-                        <Button ref={cancelRef} onClick={onClose} colorScheme="red">
-                            Go Back
-                        </Button>
-                        <Button colorScheme="green" onClick={handleConfirmLeave}>
-                            Confirm
-                        </Button>
-                    </AlertDialogFooter>
-                </AlertDialogContent>
-            </AlertDialog>
-            <Modal isOpen={areRulesOpen} onClose={onRulesClose} size="xl" isCentered>
-                <ModalOverlay />
-                <ModalContent bg="gray.800" color="white" maxH="85vh" overflow="hidden">
-                    <ModalHeader>Game Rules</ModalHeader>
-                    <ModalCloseButton aria-label="Close game rules" />
-                    <ModalBody overflowY="auto" pb={6}>
-                        <Text mb={5} color="whiteAlpha.800">
-                            You have been contracted to elimiate your targets. Follow these rules, plus any instructions from your game host.
-                        </Text>
-
-                        <Heading size="sm" mb={2} color="teal.200">
-                            Targets
-                        </Heading>
-
-                        <UnorderedList spacing={2} mb={5} pl={2}>
-                            <ListItem>
-                                To make a kill attempt, take a photo of the person and submit it for the host to review. An elimination only counts when the host approves it.
-                            </ListItem>
-                            <ListItem>
-                                If you eliminate a target, you will take all of their points.
-                            </ListItem>
-                            <ListItem>
-                                Your targets may change throughout the game, so check your target list regularly. You can press their avatar to see a closer view of them.
-                            </ListItem>
-                        </UnorderedList>
-
-                        <Heading size="sm" mb={2} color="teal.200">
-                            Missions & Points
-                        </Heading>
-
-                        <UnorderedList spacing={2} mb={5} pl={2}>
-                            <ListItem>
-                                Complete missions to earn points or revive. To keep track of scores, check the leaderboard.
-                            </ListItem>
-                        </UnorderedList>
-
-                        <Heading size="sm" mb={2} color="teal.200">
-                            Avatars
-                        </Heading>
-
-                        <UnorderedList spacing={2} mb={5} pl={2}>
-                            <ListItem>
-                                Change your avatar to be a picture of yourself so other players know who you are.
-                            </ListItem>
-                        </UnorderedList>
-
-                        <Heading size="sm" mb={2} color="teal.200">
-                            Zones
-                        </Heading>
-
-                        <UnorderedList spacing={2} mb={5} pl={2}>
-                            <ListItem>
-                                The host can decide to enable zones in the game. Users must accept location permissions to submit photos.
-                            </ListItem>
-                            <ListItem>
-                                If these zones are enabled, use the map to locate individuals who are outside of the zone.
-                            </ListItem>
-                        </UnorderedList>
-
-                        <Heading size="sm" mb={2} color="teal.200">
-                            Shop
-                        </Heading>
-
-                        <UnorderedList spacing={2} mb={5} pl={2}>
-                            <ListItem>
-                                Use the shop to purchase items that can help you in the game.
-                            </ListItem>
-                        </UnorderedList>
-
-                        <Heading size="sm" mb={2} color="teal.200">
-                            Safety
-                        </Heading>
-
-                        <UnorderedList spacing={2} mb={5} pl={2}>
-                            <ListItem>
-                                Follow all venue rules. Stay in public areas; never enter restricted spaces or run indoors.
-                            </ListItem>
-                            <ListItem>
-                                Keep play friendly and safe. No real weapons, physical contact, or
-                                actions that could alarm or endanger anyone.
-                            </ListItem>
-                            <ListItem>
-                                If rules are broken, the host may issue warnings or penalties, including removal from the game.
-                            </ListItem>
-                        </UnorderedList>
-
-                        <Heading size="sm" mb={2} color="teal.200">
-                            If you are eliminated
-                        </Heading>
-                        <Text color="whiteAlpha.800">
-                            Stay in the game and watch for revival missions. The host controls
-                            eliminations, revivals, and when the game ends. Check the chat for
-                            updates and announcements.
-                        </Text>
-                    </ModalBody>
-                </ModalContent>
-            </Modal>
+            <PlayerGameHeader
+                roomID={roomID}
+                playerName={playerName}
+                isGameActive={isGameActive}
+                gameStarted={gameStarted}
+                playerData={playerData}
+                players={players}
+                gameBoundaryEnabled={gameBoundary?.enabled === true}
+                canShop={canShop}
+                avatarInputRef={avatarInputRef}
+                avatarBusy={avatarBusy}
+                onAvatarChange={handleAvatarChange}
+                onLeaveClick={handleLeaveClick}
+                onRulesOpen={onRulesOpen}
+                onShopOpen={onShopOpen}
+                onMissionsOpen={onMissionsOpen}
+                onLeaderboardOpen={onLeaderboardOpen}
+                onMapOpen={onMapOpen}
+            />
+            <PlayerRulesModal isOpen={areRulesOpen} onClose={onRulesClose} />
+            <PlayerGameDialogs
+                isLeaveOpen={isOpen}
+                onLeaveClose={onClose}
+                onConfirmLeave={handleConfirmLeave}
+                isGameEndedOpen={isGameEndedOpen}
+                onGameEndedClose={onGameEndedClose}
+            />
             <PlayerTaskListModal
                 isOpen={isMissionsOpen}
                 onClose={onMissionsClose}
@@ -973,163 +599,32 @@ const PlayerGame = () => {
                 players={players}
                 playerName={playerName}
             />
-            {/* Once the game has ended, the target/status text no longer
-                applies — the "please head back" and final-standings
-                announcements arrive as real chat messages instead
-                (Endgamebutton.js posts them). Chat itself stays mounted
-                either way, so players can keep talking on the way back. */}
-            {isGameActive && (
-                <Box boxShadow="0 2px 4px rgba(146, 142, 142, 0.22)">
-                    {!gameStarted && (
-                        <Box mx={4} my={4} p={4} bg="whiteAlpha.100" borderRadius="xl">
-                            <Text color="white">Waiting for the host to start...</Text>
-                        </Box>
-                    )}
-                    {gameStarted && playerData && !playerData.isAlive && (
-                        <Box textAlign="center">
-                            <Heading size="md" my={2} color="red.500">
-                                YOU&apos;VE BEEN ELIMINATED
-                            </Heading>
-                            <Text mb={4}>
-                                Be on the lookout for revival missions to get back in.
-                            </Text>
-                        </Box>
-                    )}
-                </Box>
-            )}
-            {/* Pinned above the chat feed for as long as the game stays
-                inactive — closing the popup below only dismisses the
-                popup, not this. */}
-            {!isGameActive && (
-                <Box bg="red.700" color="white" borderRadius="md" p={2} mb={2} textAlign="center">
-                    <Text fontWeight="bold">
-                        GAME ENDED. PLEASE HEAD BACK TO THE STARTING AREA.
-                    </Text>
-                </Box>
-            )}
-            <Modal isOpen={isGameEndedOpen} onClose={onGameEndedClose} size="xl" isCentered>
-                <ModalOverlay />
-                <ModalContent bg="red.900" color="white">
-                    <ModalHeader textAlign="center" fontSize="2xl" fontWeight="bold">
-                        GAME ENDED
-                    </ModalHeader>
-                    <ModalCloseButton aria-label="Close modal" />
-                    <ModalBody textAlign="center">
-                        <Text fontSize="lg" fontWeight="bold">
-                            PLEASE HEAD BACK TO THE STARTING AREA.
-                        </Text>
-                    </ModalBody>
-                    <ModalFooter justifyContent="center">
-                        <Button onClick={onGameEndedClose}>Close</Button>
-                    </ModalFooter>
-                </ModalContent>
-            </Modal>
+            <PlayerGameStatusNotices
+                isGameActive={isGameActive}
+                gameStarted={gameStarted}
+                playerData={playerData}
+            />
             <Flex position="relative" direction="column" flex="1" minH="0" overflow="hidden">
-                {gameBoundary?.enabled && (playerData?.isAlive ?? true) && (
-                    <Box
-                        position="absolute"
-                        top={2}
-                        left={{ base: 2, md: 4 }}
-                        right={{ base: 2, md: 4 }}
-                        maxH="50%"
-                        overflowY="auto"
-                        zIndex={2}
-                    >
-                        {permissionState === 'unknown' && (
-                            <Box bg="blue.900" color="white" borderRadius="md" p={3} mb={2}>
-                                <Text mb={2}>
-                                    Turn on location so we can check that you are inside the game
-                                    area. The moderator sees your boundary status. Other players
-                                    cannot see your location unless you leave the game area. Keep
-                                    the game open for location updates.
-                                </Text>
-                                <Button size="sm" onClick={requestPermission}>
-                                    Enable Location
-                                </Button>
-                            </Box>
-                        )}
-                        {permissionState === 'denied' && (
-                            <Box bg="orange.800" color="white" borderRadius="md" p={3} mb={2}>
-                                <Text mb={2}>
-                                    Location permission was denied. Enable it in your browser or
-                                    device settings, then retry.
-                                </Text>
-                                <Button size="sm" onClick={requestPermission}>
-                                    Retry
-                                </Button>
-                            </Box>
-                        )}
-                        {permissionState === 'unavailable' && (
-                            <Box bg="orange.800" color="white" borderRadius="md" p={3} mb={2}>
-                                <Text>{UNAVAILABLE_REASON_TEXT.unavailable}</Text>
-                            </Box>
-                        )}
-                        {isApproachingExposure && (
-                            <Box
-                                bg="orange.700"
-                                color="white"
-                                borderRadius="md"
-                                p={2}
-                                mb={2}
-                                textAlign="center"
-                            >
-                                <Text fontWeight="bold">
-                                    Return to the game area — your location will be revealed to
-                                    everyone in {secondsUntilExposed}s.
-                                </Text>
-                            </Box>
-                        )}
-                        {liveBoundaryStatus.status === 'outside' && (
-                            <Box
-                                bg="red.900"
-                                color="white"
-                                borderRadius="md"
-                                p={2}
-                                mb={2}
-                                textAlign="center"
-                            >
-                                <Text fontWeight="bold">{statusText}</Text>
-                            </Box>
-                        )}
-                        {liveBoundaryStatus.status !== 'outside' &&
-                            liveBoundaryStatus.status !== 'unavailable' &&
-                            !isApproachingExposure && (
-                                <Text bg="gray.800" borderRadius="xl" boxShadow="lg" p={3} mb={2}>
-                                    {statusText}
-                                </Text>
-                            )}
-                        {/* Suppressed while permissionState is still 'unknown' — the
-                        pre-permission box above already explains why there is
-                        nothing to show yet; stacking both is confusing. */}
-                        {permissionState !== 'unknown' &&
-                            liveBoundaryStatus.status === 'unavailable' && (
-                                <Box bg="orange.800" color="white" borderRadius="md" p={3} mb={2}>
-                                    <Text mb={showUnavailableRetry ? 2 : 0}>
-                                        Location unavailable: {unavailableText}
-                                        {lastCheckTime && ` Last confirmed at ${lastCheckTime}.`}
-                                    </Text>
-                                    {showUnavailableRetry && (
-                                        <Button size="sm" onClick={requestPermission}>
-                                            Retry
-                                        </Button>
-                                    )}
-                                </Box>
-                            )}
-                        <PlayerMapModal
-                            isOpen={isMapOpen}
-                            onClose={handleMapClose}
-                            boundaryVertices={gameBoundary.vertices}
-                            otherPositions={[...freshOtherOutsidePositions, ...pingPositions]}
-                            ownPosition={
-                                ownPosition &&
-                                nowMs - ownPosition.acquiredAtMs <= GAME_BOUNDARY_CONFIG.freshnessMs
-                                    ? ownPosition
-                                    : null
-                            }
-                            statusText={mapStatusText}
-                        />
-                    </Box>
-                )}
+                <PlayerBoundaryPanel
+                    enabled={gameBoundary?.enabled === true}
+                    isAlive={playerData?.isAlive ?? true}
+                    permissionState={permissionState}
+                    requestPermission={requestPermission}
+                    isApproachingExposure={isApproachingExposure}
+                    secondsUntilExposed={secondsUntilExposed}
+                    liveBoundaryStatus={liveBoundaryStatus}
+                    statusText={statusText}
+                    unavailableText={unavailableText}
+                    lastCheckTime={lastCheckTime}
+                    showUnavailableRetry={showUnavailableRetry}
+                    isMapOpen={isMapOpen}
+                    onMapClose={handleMapClose}
+                    boundaryVertices={gameBoundary?.vertices ?? []}
+                    otherPositions={[...freshOtherOutsidePositions, ...pingPositions]}
+                    ownPosition={ownPosition}
+                    nowMs={nowMs}
+                    mapStatusText={mapStatusText}
+                />
                 <MessageFeed
                     onShowPings={isMapAvailable ? handleShowPings : undefined}
                     roomID={roomID}
