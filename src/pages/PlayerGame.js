@@ -446,7 +446,7 @@ const PlayerGame = () => {
             : null;
 
     const statusText = {
-        inside: 'In game area.',
+        inside: 'You are in the game area.',
         near: 'You are near the edge of the game area; check the map.',
         outside:
             'You are outside the game area — your location is visible to everyone until you return.',

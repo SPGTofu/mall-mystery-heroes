@@ -42,7 +42,7 @@ const GMChatPanel = ({ roomID }) => {
     const messages = useMemo(
         () =>
             allMessages.filter((message) =>
-                ['chat', 'broadcast', 'killPhoto'].includes(message.type)
+                ['chat', 'broadcast', 'killPhoto', 'powerUpPing'].includes(message.type)
             ),
         [allMessages]
     );

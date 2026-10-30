@@ -22,6 +22,46 @@ const GMChatMessage = ({ message }) => {
     const [isPhotoOpen, setIsPhotoOpen] = useState(false);
     const time = formatMessageTime(message.timestamp);
 
+    if (message.type === 'powerUpPing') {
+        return (
+            <ListItem mb={2}>
+                <Box
+                    bg="orange.900"
+                    border="1px solid"
+                    borderColor="orange.400"
+                    borderRadius="md"
+                    p={2}
+                    display="inline-block"
+                >
+                    <Text as="span" fontWeight="bold" color="orange.300">
+                        {message.source === 'boundaryExposure' ? 'Zone alert' : 'Ping'}
+                    </Text>{' '}
+                    <Text as="span">{message.text}</Text>
+                    {(message.pings ?? []).map((ping) => (
+                        <Text key={ping.name} fontSize="sm" color="gray.300">
+                            {ping.name}:{' '}
+                            {ping.lat == null
+                                ? 'no location'
+                                : `located at ${
+                                      ping.capturedAtMs == null
+                                          ? 'an unknown time'
+                                          : new Date(ping.capturedAtMs).toLocaleTimeString([], {
+                                                hour: 'numeric',
+                                                minute: '2-digit',
+                                          })
+                                  }${ping.isStale ? ' (old)' : ''}`}
+                        </Text>
+                    ))}
+                    {time && (
+                        <Text as="span" fontSize="xs" color="gray.400" ml={2}>
+                            {time}
+                        </Text>
+                    )}
+                </Box>
+            </ListItem>
+        );
+    }
+
     if (message.type === 'broadcast') {
         return (
             <ListItem mb={2}>

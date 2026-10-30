@@ -151,7 +151,7 @@ const MessageBubble = ({ message, playerName, onShowPings }) => {
                     display="inline-block"
                 >
                     <Text as="span" fontWeight="bold" color="orange.300">
-                        Ping
+                        {message.source === 'boundaryExposure' ? 'Zone alert' : 'Ping'}
                     </Text>{' '}
                     <Text as="span">{message.text}</Text>
                     {time && (
@@ -164,7 +164,11 @@ const MessageBubble = ({ message, playerName, onShowPings }) => {
                             {ping.name}:{' '}
                             {ping.lat == null
                                 ? 'no location'
-                                : `located at ${captureTime(ping.capturedAtMs)}${
+                                : `located at ${
+                                      ping.capturedAtMs == null
+                                          ? 'an unknown time'
+                                          : captureTime(ping.capturedAtMs)
+                                  }${
                                       ping.isStale ? ' (old)' : ''
                                   }`}
                         </Text>

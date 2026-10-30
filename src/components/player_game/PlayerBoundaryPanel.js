@@ -1,5 +1,6 @@
-import React from 'react';
-import { Box, Button, Text } from '@chakra-ui/react';
+import React, { useEffect, useState } from 'react';
+import { Box, Button, Flex, IconButton, Text } from '@chakra-ui/react';
+import { CloseIcon } from '@chakra-ui/icons';
 import PlayerMapModal from '../map_components/PlayerMapModal';
 // gameBoundary.js is CommonJS; require it to keep CRA's production webpack
 // build from treating it as a named ES module.
@@ -25,6 +26,14 @@ const PlayerBoundaryPanel = ({
     nowMs,
     mapStatusText,
 }) => {
+    const [isInsideStatusDismissed, setIsInsideStatusDismissed] = useState(false);
+
+    useEffect(() => {
+        if (liveBoundaryStatus.status !== 'inside') {
+            setIsInsideStatusDismissed(false);
+        }
+    }, [liveBoundaryStatus.status]);
+
     if (!enabled || isAlive === false) return null;
 
     return (
@@ -88,9 +97,32 @@ const PlayerBoundaryPanel = ({
             {liveBoundaryStatus.status !== 'outside' &&
                 liveBoundaryStatus.status !== 'unavailable' &&
                 !isApproachingExposure && (
-                    <Text bg="gray.800" borderRadius="xl" boxShadow="lg" p={3} mb={2}>
-                        {statusText}
-                    </Text>
+                    liveBoundaryStatus.status === 'inside' ? (
+                        !isInsideStatusDismissed && (
+                            <Flex
+                                bg="green.800"
+                                borderRadius="xl"
+                                boxShadow="lg"
+                                p={3}
+                                mb={2}
+                                align="center"
+                            >
+                                <Text flex="1">{statusText}</Text>
+                                <IconButton
+                                    aria-label="Dismiss location status"
+                                    icon={<CloseIcon />}
+                                    size="sm"
+                                    variant="ghost"
+                                    color="white"
+                                    onClick={() => setIsInsideStatusDismissed(true)}
+                                />
+                            </Flex>
+                        )
+                    ) : (
+                        <Text bg="green.800" borderRadius="xl" boxShadow="lg" p={3} mb={2}>
+                            {statusText}
+                        </Text>
+                    )
                 )}
             {permissionState !== 'unknown' && liveBoundaryStatus.status === 'unavailable' && (
                 <Box bg="orange.800" color="white" borderRadius="md" p={3} mb={2}>

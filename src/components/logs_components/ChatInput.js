@@ -5,6 +5,7 @@ import enter from '../../assets/enter-green.png';
 import { executionContext, gameContext } from '../Contexts';
 import {
     addPlayerMessageForRoom,
+    fetchBoundaryStatusForPlayer,
     fetchAliveRosterForRoom,
     fetchPlayersByStatusForRoom,
     fetchTaskByIndexForRoom,
@@ -26,6 +27,10 @@ import { buildLeaderboardStandings } from '../../game/leaderboard';
 import { normalizePlayerName, resolvePlayerDisplayName } from '../../game/playerNames';
 import { playersNeedingConnections } from '../../game/targetGraph';
 import CreateAlert from '../CreateAlert';
+
+// CommonJS by design, matching the callable-side implementation used by
+// power-up location pings so command pings use the same snapshot shape.
+const { pingEntry } = require('../../game/powerUpEffects');
 
 // handling for command execution
 //
@@ -400,6 +405,42 @@ const handleCommandExecution = async (
                     console.error(`${args[0]} is not dead`);
                 }
                 break;
+
+            case '/ping': {
+                const pingPlayerName = args[0] ? normalizePlayerName(args[0]) : '';
+                if (arrayOfPlayerNames.includes(pingPlayerName)) {
+                    const pingedName = resolvePlayerDisplayName(pingPlayerName, players);
+                    const boundaryStatus = await fetchBoundaryStatusForPlayer(pingPlayerName, roomID);
+                    const ping = pingEntry({
+                        name: pingedName,
+                        status: boundaryStatus
+                            ? {
+                                  lat: boundaryStatus.lat,
+                                  lng: boundaryStatus.lng,
+                                  accuracyMeters: boundaryStatus.accuracyMeters,
+                                  lastUsableMs:
+                                      boundaryStatus.lastUsableReceivedAt?.toMillis?.() ?? null,
+                              }
+                            : null,
+                        nowMs: Date.now(),
+                    });
+                    await addPlayerMessageForRoom(
+                        {
+                            type: 'powerUpPing',
+                            recipient: null,
+                            text: `📍 ${pingedName} has been pinged by the GM!`,
+                            pingedPlayer: pingedName,
+                            pings: [ping],
+                        },
+                        roomID
+                    );
+                    await addLog(`Location ping sent to everyone for ${pingedName}`, 'orange.400');
+                } else {
+                    createAlert('error', 'Error', `Player ${args[0] || ''} is invalid`, 1500);
+                    console.error(`Player ${args[0]} is invalid.`);
+                }
+                break;
+            }
 
             case '/whisper':
                 const whisperPlayerName = args[0] ? normalizePlayerName(args[0]) : '';

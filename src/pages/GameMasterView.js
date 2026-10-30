@@ -67,6 +67,7 @@ const GameMasterView = () => {
             setPlayers(
                 snapshot.docs.map((doc) => ({
                     name: doc.data().name,
+                    avatarUrl: doc.data().avatarUrl,
                     score: doc.data().score,
                     targets: doc.data().targets,
                     openSeason: doc.data().openSeason,
