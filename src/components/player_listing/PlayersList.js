@@ -25,9 +25,14 @@ const PlayersList = ({ players }) => {
             players.map((player, index) => (
                 <Flex sx={styles.playerContainer} key={player.name}>
                     <Flex sx={styles.playerWrapper}>
-                        <Flex
+                        <Box
+                            as="button"
+                            type="button"
+                            onClick={() => setSelectedPlayer(player)}
+                            aria-label={`View ${player.name}'s photo`}
                             sx={{
                                 ...styles.playerNameWrapper,
+                                ...styles.playerNameButton,
                                 color: player.isAlive
                                     ? player.openSeason
                                         ? '#ffcc00'
@@ -35,19 +40,8 @@ const PlayersList = ({ players }) => {
                                     : '#b3b3b3',
                             }}
                         >
-                            {index + 1}.
-                            <Box
-                                as="button"
-                                type="button"
-                                onClick={() => setSelectedPlayer(player)}
-                                sx={styles.playerNameButton}
-                                aria-label={`View ${player.name}'s photo`}
-                                m={0}
-                                ml={1}
-                            >
-                                {player.name}
-                            </Box>
-                        </Flex>
+                            {index + 1}. {player.name}
+                        </Box>
                         <Box
                             sx={{
                                 ...styles.playerScoreWrapper,
@@ -159,6 +153,7 @@ const styles = {
         textOverflow: 'ellipsis',
     },
     playerNameButton: {
+        display: 'block',
         background: 'transparent',
         border: 0,
         color: 'inherit',
