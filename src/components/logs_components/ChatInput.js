@@ -410,7 +410,10 @@ const handleCommandExecution = async (
                 const pingPlayerName = args[0] ? normalizePlayerName(args[0]) : '';
                 if (arrayOfPlayerNames.includes(pingPlayerName)) {
                     const pingedName = resolvePlayerDisplayName(pingPlayerName, players);
-                    const boundaryStatus = await fetchBoundaryStatusForPlayer(pingPlayerName, roomID);
+                    const boundaryStatus = await fetchBoundaryStatusForPlayer(
+                        pingPlayerName,
+                        roomID
+                    );
                     const ping = pingEntry({
                         name: pingedName,
                         status: boundaryStatus

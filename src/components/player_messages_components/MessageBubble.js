@@ -168,9 +168,7 @@ const MessageBubble = ({ message, playerName, onShowPings }) => {
                                       ping.capturedAtMs == null
                                           ? 'an unknown time'
                                           : captureTime(ping.capturedAtMs)
-                                  }${
-                                      ping.isStale ? ' (old)' : ''
-                                  }`}
+                                  }${ping.isStale ? ' (old)' : ''}`}
                         </Text>
                     ))}
                     {onShowPings && (message.pings ?? []).some((ping) => ping.lat != null) && (

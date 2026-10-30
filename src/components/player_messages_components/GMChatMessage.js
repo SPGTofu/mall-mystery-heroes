@@ -48,7 +48,7 @@ const GMChatMessage = ({ message }) => {
                                           : new Date(ping.capturedAtMs).toLocaleTimeString([], {
                                                 hour: 'numeric',
                                                 minute: '2-digit',
-                                          })
+                                            })
                                   }${ping.isStale ? ' (old)' : ''}`}
                         </Text>
                     ))}

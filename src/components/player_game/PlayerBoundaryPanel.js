@@ -96,34 +96,33 @@ const PlayerBoundaryPanel = ({
             )}
             {liveBoundaryStatus.status !== 'outside' &&
                 liveBoundaryStatus.status !== 'unavailable' &&
-                !isApproachingExposure && (
-                    liveBoundaryStatus.status === 'inside' ? (
-                        !isInsideStatusDismissed && (
-                            <Flex
-                                bg="green.800"
-                                borderRadius="xl"
-                                boxShadow="lg"
-                                p={3}
-                                mb={2}
-                                align="center"
-                            >
-                                <Text flex="1">{statusText}</Text>
-                                <IconButton
-                                    aria-label="Dismiss location status"
-                                    icon={<CloseIcon />}
-                                    size="sm"
-                                    variant="ghost"
-                                    color="white"
-                                    onClick={() => setIsInsideStatusDismissed(true)}
-                                />
-                            </Flex>
-                        )
-                    ) : (
-                        <Text bg="green.800" borderRadius="xl" boxShadow="lg" p={3} mb={2}>
-                            {statusText}
-                        </Text>
+                !isApproachingExposure &&
+                (liveBoundaryStatus.status === 'inside' ? (
+                    !isInsideStatusDismissed && (
+                        <Flex
+                            bg="green.800"
+                            borderRadius="xl"
+                            boxShadow="lg"
+                            p={3}
+                            mb={2}
+                            align="center"
+                        >
+                            <Text flex="1">{statusText}</Text>
+                            <IconButton
+                                aria-label="Dismiss location status"
+                                icon={<CloseIcon />}
+                                size="sm"
+                                variant="ghost"
+                                color="white"
+                                onClick={() => setIsInsideStatusDismissed(true)}
+                            />
+                        </Flex>
                     )
-                )}
+                ) : (
+                    <Text bg="green.800" borderRadius="xl" boxShadow="lg" p={3} mb={2}>
+                        {statusText}
+                    </Text>
+                ))}
             {permissionState !== 'unknown' && liveBoundaryStatus.status === 'unavailable' && (
                 <Box bg="orange.800" color="white" borderRadius="md" p={3} mb={2}>
                     <Text mb={showUnavailableRetry ? 2 : 0}>
